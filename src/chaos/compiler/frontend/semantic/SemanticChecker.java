@@ -85,7 +85,17 @@ public class SemanticChecker implements ASTVisitor {
     public void visit(FuncCallExprNode node) {
         node.funcCallNode.accept(this);
         node.argNodes.forEach(sonnode -> sonnode.accept(this));
-        
+
+        if (!(node.funcCallNode.type instanceof FuncType)) {
+            if (!(node.funcCallNode instanceof AtomExprNode))
+                throw new Error(node.pos, "\"" + ((AtomExprNode) node.funcCallNode).context.Identifier().getText() + "\" is not a function");
+            if (((AtomExprNode) node.funcCallNode).context.Identifier() == null)
+                throw new Error(node.pos, "\"" + ((AtomExprNode) node.funcCallNode).context.Identifier().getText() + "\" is not a function");
+            FuncRegistry funcRegistry = commander.queryFunc(((AtomExprNode) node.funcCallNode).context.Identifier().getText());
+            if (funcRegistry == null)
+                throw new Error(node.pos, "\"" + ((AtomExprNode) node.funcCallNode).context.Identifier().getText() + "\" is not a function");
+            else node.funcCallNode.type = funcRegistry.type.copy();
+        }
 
         int result = ((FuncType) node.funcCallNode.type).funcCallMatch(node.argNodes);
         if (result == -1)
