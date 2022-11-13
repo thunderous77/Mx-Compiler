@@ -16,9 +16,9 @@ public class TypeMatcher {
     public static void match(UnaryExprNode node) {
         if (Objects.equals(node.opcode, UnaryExprNode.unaryOp.LOGIC_NOT)) {
             if (!node.selfNode.type.match(BaseType.BuiltinType.BOOL))
-                throw new Error(node.pos, "type mismatched between: \"bool\" and \"" + node.selfNode.type.toString() + "\"");
+                throw new Error(node.pos, "builtinType mismatched between: \"bool\" and \"" + node.selfNode.type.toString() + "\"");
         } else if (!node.selfNode.type.match(BaseType.BuiltinType.INT))
-            throw new Error(node.pos, "type mismatched between: \"int\" and \"" + node.selfNode.type.toString() + "\"");
+            throw new Error(node.pos, "builtinType mismatched between: \"int\" and \"" + node.selfNode.type.toString() + "\"");
     }
 
     // prefix : --,++ -> int
@@ -27,7 +27,7 @@ public class TypeMatcher {
             throw new Error(node.pos, "expecting a left-value in prefix expression");
         }
         if (!node.selfNode.type.match(BaseType.BuiltinType.INT)) {
-            throw new Error(node.pos, "type mismatched between: \"int\" and \"" + node.selfNode.type.toString() + "\"");
+            throw new Error(node.pos, "builtinType mismatched between: \"int\" and \"" + node.selfNode.type.toString() + "\"");
         }
     }
 
@@ -37,7 +37,7 @@ public class TypeMatcher {
             throw new Error(node.pos, "expecting a left-value in postfix expression");
         }
         if (!node.selfNode.type.match(BaseType.BuiltinType.INT)) {
-            throw new Error(node.pos, "type mismatched between: \"int\" and \"" + node.selfNode.type.toString() + "\"");
+            throw new Error(node.pos, "builtinType mismatched between: \"int\" and \"" + node.selfNode.type.toString() + "\"");
         }
     }
 
@@ -50,12 +50,12 @@ public class TypeMatcher {
     // index: a[b] , b -> int
     public static void match(IndexExprNode node) {
         if (!(node.arrayNode.type instanceof VarType))
-            throw new Error(node.pos, "typeError: " + node.arrayNode.type.toString() + " is an undefined/wrong array type");
+            throw new Error(node.pos, "typeError: " + node.arrayNode.type.toString() + " is an undefined/wrong array builtinType");
         if (((VarType) node.arrayNode.type).dimensize == 0)
-            throw new Error(node.pos, "typeError: " + node.arrayNode.type.toString() + " is an undefined/wrong array type");
+            throw new Error(node.pos, "typeError: " + node.arrayNode.type.toString() + " is an undefined/wrong array builtinType");
         assert node.indexNode != null;
         if (!node.indexNode.type.match(BaseType.BuiltinType.INT))
-            throw new Error(node.pos, "type mismatched between: \"int\" and \"" + node.indexNode.type.toString() + "\"");
+            throw new Error(node.pos, "builtinType mismatched between: \"int\" and \"" + node.indexNode.type.toString() + "\"");
     }
 
     // binary: a op b
@@ -66,7 +66,7 @@ public class TypeMatcher {
     // ==, !=: all
     public static void match(BinaryExprNode node) {
         if (!node.lNode.type.match(node.rNode.type))
-            throw new Error(node.pos, "type mismatched between: \"" + node.lNode.type.toString() + "\" and \"" + node.rNode.type.toString() + "\"");
+            throw new Error(node.pos, "builtinType mismatched between: \"" + node.lNode.type.toString() + "\" and \"" + node.rNode.type.toString() + "\"");
         if (node.lNode.type.match(BaseType.BuiltinType.STRING)) {
             if (!Objects.equals(node.opcode, BinaryExprNode.binaryOp.EQUAL) &&
                     !Objects.equals(node.opcode, BinaryExprNode.binaryOp.NOT_EQUAL) &&
@@ -75,13 +75,13 @@ public class TypeMatcher {
                     !Objects.equals(node.opcode, BinaryExprNode.binaryOp.GREATER) &&
                     !Objects.equals(node.opcode, BinaryExprNode.binaryOp.LESS) &&
                     !Objects.equals(node.opcode, BinaryExprNode.binaryOp.ADD))
-                throw new Error(node.pos, "invalid operator for type \"string\"");
+                throw new Error(node.pos, "invalid operator for builtinType \"string\"");
             return;
         }
         if (Objects.equals(node.opcode, BinaryExprNode.binaryOp.LOGIC_AND) ||
                 Objects.equals(node.opcode, BinaryExprNode.binaryOp.LOGIC_OR)) {
             if (!node.lNode.type.match(BaseType.BuiltinType.BOOL))
-                throw new Error(node.pos, "invalid operator for type \"" + node.lNode.type + "\"");
+                throw new Error(node.pos, "invalid operator for builtinType \"" + node.lNode.type + "\"");
         }
         if (Objects.equals(node.opcode, BinaryExprNode.binaryOp.ADD) ||
                 Objects.equals(node.opcode, BinaryExprNode.binaryOp.SUB) ||
@@ -94,47 +94,47 @@ public class TypeMatcher {
                 Objects.equals(node.opcode, BinaryExprNode.binaryOp.BIT_OR) ||
                 Objects.equals(node.opcode, BinaryExprNode.binaryOp.BIT_XOR)) {
             if (!node.lNode.type.match(BaseType.BuiltinType.INT))
-                throw new Error(node.pos, "invalid operator for type \"" + node.lNode.type + "\"");
+                throw new Error(node.pos, "invalid operator for builtinType \"" + node.lNode.type + "\"");
         }
         if (Objects.equals(node.opcode, BinaryExprNode.binaryOp.GREATER) ||
                 Objects.equals(node.opcode, BinaryExprNode.binaryOp.GREATER_EQUAL) ||
                 Objects.equals(node.opcode, BinaryExprNode.binaryOp.LESS) ||
                 Objects.equals(node.opcode, BinaryExprNode.binaryOp.LESS_EQUAL)) {
             if (!node.lNode.type.match(BaseType.BuiltinType.INT))
-                throw new Error(node.pos, "invalid operator for type \"" + node.lNode.type + "\"");
+                throw new Error(node.pos, "invalid operator for builtinType \"" + node.lNode.type + "\"");
         }
     }
 
-    //assignment: a = b -> a.type == b.type, a is leftvalue
+    //assignment: a = b -> a.builtinType == b.builtinType, a is leftvalue
     public static void match(AssignExprNode node) {
         if (!node.lNode.isLeftValue())
             throw new Error(node.pos, node.lNode + "should be a leftvalue");
         if (!node.lNode.type.match(node.rNode.type))
-            throw new Error(node.pos, "type mismatched between: \"" + node.lNode.type.toString() + "\" and \"" + node.rNode.type.toString() + "\"");
+            throw new Error(node.pos, "builtinType mismatched between: \"" + node.lNode.type.toString() + "\" and \"" + node.rNode.type.toString() + "\"");
     }
 
-    //variable declaration: int a = 1 -> a.type == 1.type
+    //variable declaration: int a = 1 -> a.builtinType == 1.builtinType
     public static void match(VarDefSingleNode node) {
         if (!node.varRegistry.type.match(node.initNode.type))
-            throw new Error(node.pos, "type mismatched between: \"" + node.varRegistry.type.toString() + "\" and \"" + node.initNode.type.toString() + "\"");
+            throw new Error(node.pos, "builtinType mismatched between: \"" + node.varRegistry.type.toString() + "\" and \"" + node.initNode.type.toString() + "\"");
     }
 
     // for statement: condition -> bool
     public static void match(ForStmtNode node) {
         if (!node.conditionNode.type.match(BaseType.BuiltinType.BOOL))
-            throw new Error(node.pos, "type mismatched between: \"bool\" and \"" + node.conditionNode.type.toString() + "\"");
+            throw new Error(node.pos, "builtinType mismatched between: \"bool\" and \"" + node.conditionNode.type.toString() + "\"");
     }
 
     // while statement: condition -> bool
     public static void match(WhileStmtNode node) {
         if (!node.conditionNode.type.match(BaseType.BuiltinType.BOOL))
-            throw new Error(node.pos, "type mismatched between: \"bool\" and \"" + node.conditionNode.type.toString() + "\"");
+            throw new Error(node.pos, "builtinType mismatched between: \"bool\" and \"" + node.conditionNode.type.toString() + "\"");
     }
 
     // if statement: condition -> bool
     public static void match(IfStmtNode node) {
         if (!node.conditionNode.type.match(BaseType.BuiltinType.BOOL))
-            throw new Error(node.pos, "type mismatched between: \"bool\" and \"" + node.conditionNode.type.toString() + "\"");
+            throw new Error(node.pos, "builtinType mismatched between: \"bool\" and \"" + node.conditionNode.type.toString() + "\"");
     }
 
     // new: int[][] a = new int[][];
@@ -142,7 +142,7 @@ public class TypeMatcher {
     public static void match(NewExprNode node) {
         for (ExprBaseNode eachDimSizeNode : node.eachDimSizeNode) {
             if (!eachDimSizeNode.type.match(BaseType.BuiltinType.INT))
-                throw new Error(node.pos, "type mismatched between: \"int\" and \"" + eachDimSizeNode.type.toString() + "\"");
+                throw new Error(node.pos, "builtinType mismatched between: \"int\" and \"" + eachDimSizeNode.type.toString() + "\"");
         }
     }
 

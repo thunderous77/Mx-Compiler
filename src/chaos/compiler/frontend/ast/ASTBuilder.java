@@ -55,7 +55,7 @@ public class ASTBuilder extends MxParserBaseVisitor<BaseNode> {
         ctx.classConstructorDef().forEach(sonctx -> {
             FuncDefNode constructorDefNode = (FuncDefNode) visit(sonctx);
             if (!Objects.equals(ret.classRegistry.name, constructorDefNode.funcRegistry.name)) {
-                throw new Error(new Position(ctx), "the construction function's name does not match with the class name");
+                throw new Error(new Position(ctx), "the construction function's structName does not match with the class structName");
             }
             ret.classRegistry.memberFuncs.add(constructorDefNode.funcRegistry);
             ret.classRegistry.scope.register(constructorDefNode.funcRegistry);

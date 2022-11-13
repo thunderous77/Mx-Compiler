@@ -29,13 +29,13 @@ public class VarType extends BaseType {
         dimensize = context.LeftBracket().size();
         name = "not a class";
 
-        if (context.VoidType() != null) type = BuiltinType.VOID;
+        if (context.VoidType() != null) builtinType = BuiltinType.VOID;
         else if (context.builtinType() != null) {
-            if (context.builtinType().IntType() != null) type = BuiltinType.INT;
-            else if (context.builtinType().BoolType() != null) type = BuiltinType.BOOL;
-            else if (context.builtinType().StringType() != null) type = BuiltinType.STRING;
+            if (context.builtinType().IntType() != null) builtinType = BuiltinType.INT;
+            else if (context.builtinType().BoolType() != null) builtinType = BuiltinType.BOOL;
+            else if (context.builtinType().StringType() != null) builtinType = BuiltinType.STRING;
             else if (context.builtinType().Identifier() != null) {
-                type = BuiltinType.CLASS;
+                builtinType = BuiltinType.CLASS;
                 name = context.builtinType().Identifier().toString();
             }
         }
@@ -47,13 +47,13 @@ public class VarType extends BaseType {
         name = "not a class";
 
         if (context.VoidType() != null)
-            throw new Error(new Position(context), "\"void\" type cannot be used in variable declaration");
+            throw new Error(new Position(context), "\"void\" builtinType cannot be used in variable declaration");
         else if (context.builtinType() != null) {
-            if (context.builtinType().IntType() != null) type = BuiltinType.INT;
-            else if (context.builtinType().BoolType() != null) type = BuiltinType.BOOL;
-            else if (context.builtinType().StringType() != null) type = BuiltinType.STRING;
+            if (context.builtinType().IntType() != null) builtinType = BuiltinType.INT;
+            else if (context.builtinType().BoolType() != null) builtinType = BuiltinType.BOOL;
+            else if (context.builtinType().StringType() != null) builtinType = BuiltinType.STRING;
             else if (context.builtinType().Identifier() != null) {
-                type = BuiltinType.CLASS;
+                builtinType = BuiltinType.CLASS;
                 name = context.builtinType().Identifier().toString();
             }
         }
@@ -73,23 +73,23 @@ public class VarType extends BaseType {
                 throw new Error(new Position(context.arraySizeDef(i)), "the outer size should be declared at first");
         }
         if (context.builtinType() != null) {
-            if (context.builtinType().IntType() != null) type = BuiltinType.INT;
-            else if (context.builtinType().BoolType() != null) type = BuiltinType.BOOL;
-            else if (context.builtinType().StringType() != null) type = BuiltinType.STRING;
+            if (context.builtinType().IntType() != null) builtinType = BuiltinType.INT;
+            else if (context.builtinType().BoolType() != null) builtinType = BuiltinType.BOOL;
+            else if (context.builtinType().StringType() != null) builtinType = BuiltinType.STRING;
             else if (context.builtinType().Identifier() != null) {
-                type = BuiltinType.CLASS;
+                builtinType = BuiltinType.CLASS;
                 name = context.builtinType().Identifier().toString();
             }
         } else if (context.VoidType() != null)
-            throw new Error(new Position(context), "\"void\" type cannot be used in variable declaration");
+            throw new Error(new Position(context), "\"void\" builtinType cannot be used in variable declaration");
     }
 
     @Override
     public boolean match(BaseType other) {
         if (other instanceof VarType) {
-            if ((dimensize > 0 || type == BuiltinType.CLASS) && other.type == BuiltinType.NULL)
+            if ((dimensize > 0 || builtinType == BuiltinType.CLASS) && other.builtinType == BuiltinType.NULL)
                 return true;
-            return type == other.type && Objects.equals(name, ((VarType) other).name) &&
+            return builtinType == other.builtinType && Objects.equals(name, ((VarType) other).name) &&
                     dimensize == ((VarType) other).dimensize;
         }
         return false;
@@ -97,9 +97,9 @@ public class VarType extends BaseType {
 
     @Override
     public boolean match(BuiltinType other) {
-        if ((dimensize > 0 || type == BuiltinType.CLASS) && other == BuiltinType.NULL)
+        if ((dimensize > 0 || builtinType == BuiltinType.CLASS) && other == BuiltinType.NULL)
             return true;
-        return type == other && dimensize == 0;
+        return builtinType == other && dimensize == 0;
     }
 
     @Override
@@ -109,7 +109,7 @@ public class VarType extends BaseType {
 
     @Override
     public BaseType copy() {
-        VarType ret = new VarType(type);
+        VarType ret = new VarType(builtinType);
         ret.dimensize = dimensize;
         ret.name = name;
         return ret;
@@ -118,8 +118,8 @@ public class VarType extends BaseType {
     public String toString() {
         StringBuilder ret = null;
 
-        if (type == BuiltinType.CLASS) ret = new StringBuilder(name);
-        else ret = new StringBuilder(type.toString());
+        if (builtinType == BuiltinType.CLASS) ret = new StringBuilder(name);
+        else ret = new StringBuilder(builtinType.toString());
 
         for (int i = 0; i < dimensize; ++i) ret.append("[]");
         return ret.toString();

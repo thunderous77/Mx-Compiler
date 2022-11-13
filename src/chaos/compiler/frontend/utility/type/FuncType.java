@@ -41,7 +41,7 @@ public class FuncType extends BaseType {
 
     //  0 -> no error
     // -1 -> size not match
-    // -2 -> type not match
+    // -2 -> builtinType not match
     public int funcCallMatch(ArrayList<ExprBaseNode> argsNode) {
         if (funcArgsType.size() != argsNode.size())
             return -1;

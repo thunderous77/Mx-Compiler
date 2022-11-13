@@ -6,10 +6,10 @@ public abstract class BaseType {
         NULL, INT, BOOL, STRING, VOID, CLASS, FUNC
     }
 
-    public BuiltinType type;
+    public BuiltinType builtinType;
 
-    public BaseType(BuiltinType type) {
-        this.type = type;
+    public BaseType(BuiltinType builtinType) {
+        this.builtinType = builtinType;
     }
 
     public abstract boolean match(BuiltinType other);

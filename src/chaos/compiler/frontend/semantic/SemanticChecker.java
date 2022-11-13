@@ -101,7 +101,7 @@ public class SemanticChecker implements ASTVisitor {
         if (result == -1)
             throw new Error(node.pos, "wrong number of the input arguments for the function");
         else if (result == -2)
-            throw new Error(node.pos, "wrong type of the input arguments for the function");
+            throw new Error(node.pos, "wrong builtinType of the input arguments for the function");
 
         node.type = ((FuncType) node.funcCallNode.type).retType.copy();
     }
@@ -120,7 +120,7 @@ public class SemanticChecker implements ASTVisitor {
     public void visit(LambdaExprNode node) {
         commander.push(node.funcRegistry.scope);
         for (VarRegistry varRegistry : node.funcRegistry.funcArgs) {
-            if (varRegistry.type.type == BaseType.BuiltinType.CLASS && commander.queryClass(varRegistry.type.name) == null)
+            if (varRegistry.type.builtinType == BaseType.BuiltinType.CLASS && commander.queryClass(varRegistry.type.name) == null)
                 throw new Error(node.pos, "\"" + varRegistry.type.name + "\" is undefined");
             commander.register(varRegistry);
         }
@@ -131,7 +131,7 @@ public class SemanticChecker implements ASTVisitor {
         if (result == -1)
             throw new Error(node.pos, "wrong number of the input arguments for the function");
         else if (result == -2)
-            throw new Error(node.pos, "wrong type of the input arguments for the function");
+            throw new Error(node.pos, "wrong builtinType of the input arguments for the function");
         if (node.funcRegistry.scope.retTypeList.isEmpty()) // no return
             node.type = new VarType(BaseType.BuiltinType.VOID);
         else {
@@ -140,7 +140,7 @@ public class SemanticChecker implements ASTVisitor {
                     node.type = retType;
                     node.funcRegistry.type.retType = retType;
                 } else if (!node.type.match(retType))
-                    throw new Error(node.pos, "wrong return type");
+                    throw new Error(node.pos, "wrong return builtinType");
             }
         }
         commander.pop();
@@ -266,7 +266,7 @@ public class SemanticChecker implements ASTVisitor {
     public void visit(VarDefSingleNode node) {
         // from right to left, init first, register after
         if (node.initNode != null) node.initNode.accept(this);
-        if (node.varRegistry.type.type == BaseType.BuiltinType.CLASS && commander.queryClass(node.varRegistry.type.name) == null)
+        if (node.varRegistry.type.builtinType == BaseType.BuiltinType.CLASS && commander.queryClass(node.varRegistry.type.name) == null)
             throw new Error(node.pos, "\"" + node.varRegistry.type.name + "\" is undefined");
         if (node.initNode != null) TypeMatcher.match(node);
         commander.register(node.varRegistry);
@@ -294,9 +294,9 @@ public class SemanticChecker implements ASTVisitor {
     public void visit(FuncDefNode node) {
         commander.push(node.funcRegistry.scope);
 
-        // query class type
+        // query class builtinType
         for (VarRegistry registry : node.funcRegistry.funcArgs) {
-            if (registry.type.type == BaseType.BuiltinType.CLASS &&
+            if (registry.type.builtinType == BaseType.BuiltinType.CLASS &&
                     commander.queryClass(registry.type.name) == null) {
                 throw new Error(node.pos, "\"" + registry.type.name + "\" is undefined");
             }
@@ -316,7 +316,7 @@ public class SemanticChecker implements ASTVisitor {
                 // retType != null
                 assert node.funcRegistry.type.retType != null;
                 if (!node.funcRegistry.type.retType.match(catchedRetType)) {
-                    throw new Error(node.pos, "function returns a wrong type");
+                    throw new Error(node.pos, "function returns a wrong builtinType");
                 }
             }
         }
