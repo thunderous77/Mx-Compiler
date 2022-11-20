@@ -1,7 +1,9 @@
 package chaos.compiler.middleend.llvmir.instruction;
 
-import chaos.compiler.frontend.ast.node.expr.BinaryExprNode;
+
 import chaos.compiler.middleend.llvmir.Value;
+import chaos.compiler.middleend.llvmir.hierarchy.IRBlock;
+import chaos.compiler.middleend.llvmir.type.IRBaseType;
 
 public class BinaryInst extends BaseInst {
 
@@ -10,12 +12,37 @@ public class BinaryInst extends BaseInst {
     }
 
     public BinaryOpcode opcode;
+    public String op;
 
-    public BinaryInst(BinaryOpcode opcode, Value op1, Value op2) {
-        super(op1.type);
-        this.opcode = opcode;
-        addUse(op1);
-        addUse(op2);
+    public BinaryInst(String op, IRBaseType retType, Value lValue, Value rValue, IRBlock parentBlock) {
+        super(op, retType, parentBlock);
+        this.op = op;
+        this.addOperand(lValue);
+        this.addOperand(rValue);
+    }
+
+    public Value leftValue() {
+        return this.getOperand(0);
+    }
+
+    public Value rightValue() {
+        return this.getOperand(1);
+    }
+
+    @Override
+    public String format() {
+        // %add = add i32 %A, %B
+        return this.identifier() + " = " + this.op + " " + this.type + " " + this.leftValue().identifier() + ", " + this.rightValue().identifier();
+    }
+
+    @Override
+    public BaseInst copy() {
+        return new BinaryInst(op, type, leftValue(), rightValue(), null);
+    }
+
+    @Override
+    public void accept(InstVisitor visitor) {
+        visitor.visit(this);
     }
 
 }

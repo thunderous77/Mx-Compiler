@@ -1,6 +1,195 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SVCompilerDirectivesDefines">
+    <option name="dependencies">
+      <map>
+        <entry key="ADDR_TYPE">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/IF/Fetcher.v" />
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/IF/Predictor.v" />
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/Mem/MemCtrl.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="DATA_TYPE">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/Mem/MemCtrl.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="FALSE">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/IF/Fetcher.v" />
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/IF/Predictor.v" />
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/Mem/MemCtrl.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="ICACHE_INDEX_RANGE">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/IF/Fetcher.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="ICACHE_SIZE">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/IF/Fetcher.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="ICACHE_TAG_RANGE">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/IF/Fetcher.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="INST_TYPE">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/IF/Fetcher.v" />
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/IF/Predictor.v" />
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/Mem/MemCtrl.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="INT_TYPE">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/Mem/MemCtrl.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="MEMDATA_TYPE">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/Mem/MemCtrl.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="NULL">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/IF/Fetcher.v" />
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/Mem/MemCtrl.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="OPCODE_BR">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/IF/Predictor.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="OPCODE_JAL">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/IF/Predictor.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="OPCODE_RANGE">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/IF/Predictor.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="PC_BIT">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/IF/Fetcher.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="PREDICTOR_ADDR_RANGE">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/IF/Predictor.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="PREDICTOR_BIT">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/IF/Predictor.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="PREDICTOR_SIZE">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/IF/Predictor.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="RAM_LOAD">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/Mem/MemCtrl.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="RAM_PC_BIT">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/Mem/MemCtrl.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="RAM_STORE">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/Mem/MemCtrl.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="STATUS_TYPE">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/IF/Fetcher.v" />
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/Mem/MemCtrl.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="STRONG_JUMP">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/IF/Predictor.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="STRONG_NOT_JUMP">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/IF/Predictor.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="TRUE">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/IF/Fetcher.v" />
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/IF/Predictor.v" />
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/Mem/MemCtrl.v" />
+            </set>
+          </value>
+        </entry>
+        <entry key="WEAK_NOT_JUMP">
+          <value>
+            <set>
+              <option value="$PROJECT_DIR$/../CPU-2022/riscv/src/IF/Predictor.v" />
+            </set>
+          </value>
+        </entry>
+      </map>
+    </option>
     <option name="status" value="NORMAL" />
     <option name="version" value="798" />
   </component>

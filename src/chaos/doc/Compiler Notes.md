@@ -120,37 +120,81 @@
 
 ### My LLVM IR
 
+* 概要
+
+  
+
 * [Type](https://blog.csdn.net/weixin_42654107/article/details/122862209#:~:text=llvm%3A%3A,ArrayType%20ArrayType%E6%98%AF1%E7%A7%8D%E5%B0%86%E5%85%83%E7%B4%A0%E5%9C%A8%E5%86%85%E5%AD%98%E4%B8%AD%E9%A1%BA%E5%BA%8F%E6%8E%92%E5%88%97%E7%9A%84%E7%B1%BB%E5%9E%8B%EF%BC%8C%E6%9C%892%E4%B8%AA%E5%B1%9E%E6%80%A7%EF%BC%9Asize%E5%92%8C%E5%85%83%E7%B4%A0%E7%B1%BB%E5%9E%8B%E3%80%82)
 
   ![image-20221109195753530](C:\Users\27595\AppData\Roaming\Typora\typora-user-images\image-20221109195753530.png)
 
   * 删去`VectorType`（未用到）
-  * 新增 `LabelType`  `VoidType`
+  
+  * 新增 `LabelType`  `VoidType` `BoolType` `MemBoolType` `StructType`
+  
+  * `BoolType(i1)` and `MemBoolType(i8)`用途
+    - alloca: alloca boolType -> alloca memBoolType
+    - load: load memBoolType -> load boolType
+    - store: store boolType -> store memBoolType
+    - 我们于是需要 `IRBitcastInst` 来实现两者的相互强制转换
+    
+  * `StructType`
+  
+    即Semantic中的class，`Struct` 保存了class的Valu
+  
+    e传给ClassRegistry，而 `StructType` 则作为一种type与class对应
+    
+  * `FunctionType`
+  
+    参数 `methodfrom` 表示函数是某些类型（`IRBaseType`）所专有的（string 或者 class）
+    
+  * `size()` 函数
+  
+    为之后 `alloca` 操作做准备，返回byte值
   
 * [Constant](https://blog.csdn.net/weixin_42654107/article/details/123419630?spm=1001.2014.3001.5502)
 
   ![image-20221109205145125](C:\Users\27595\AppData\Roaming\Typora\typora-user-images\image-20221109205145125.png)
 
-  * 实现`AggregateZeroConstant`  `IntergerConstant`  `NullPointerConstant`   `StrConstant`
+  * 实现`BoolConstant`  `IntergerConstant`  `NullPointerConstant`   `StrConstant`
 
 * [Value](https://blog.csdn.net/weixin_42654107/article/details/122998347?spm=1001.2014.3001.5502)  [User](https://blog.csdn.net/weixin_42654107/article/details/123056494?spm=1001.2014.3001.5502)  [Use](https://blog.csdn.net/weixin_42654107/article/details/123086570?spm=1001.2014.3001.5502)
 
   <img src="C:\Users\27595\AppData\Roaming\Typora\typora-user-images\image-20221109173451304.png" style="zoom:50%">
 
-  > 一个Value可以有多个Use，每个Use对应一个User
+  * 一个Value可以有多个Use，每个Use对应一个User
+  * 每个value有 `identifier()` 函数，默认是 `%name` （寄存器），全局变量是 `@name`
   
-  > 一个User可以有多个Use，每个Use对应一个Value
+  * 一个User可以有多个Use，每个Use对应一个Value
   
-  > **Use类的核心就是如何让Value和User高效地双向关联**
+  * **Use类的核心就是如何让Value和User高效地双向关联**
   
 * hierarchy
 
   <img src="C:\Users\27595\AppData\Roaming\Typora\typora-user-images\image-20221109185847766.png" style="zoom:70%">
 
-  实现`Module`  `Function`  `Block`   `Variable`(新增)
+  * 新增 `GlobalValue` 和 `GlobalVariable`
 
 * [Instruction](https://blog.csdn.net/qq_37206105/article/details/115274241)
 
-  `BinaryInst` Semantic中的运算二元关系
-
+  * Instruction的Value表示它的返回值
+  * `format()` 返回一行instruction指令
+  * 同时instruction还是value，因此也有 `identifier()` 函数返回标识符
   
+  * `BinaryInst` Semantic中的运算二元关系
+  
+  * `GEPInst`
+  
+    <img src="C:\Users\27595\AppData\Roaming\Typora\typora-user-images\image-20221120222752580.png" style="zoom:30%">
+  
+    为了简化，我们只使用1/2个index（`i32 1`），因为一个含有多个index的GEP可以拆分成多个1/2index的GEP
+  
+    [这里](https://blog.csdn.net/qq_42570601/article/details/107581608)对于第一个和第二个参数解释很清楚
+  
+* IRBlock
+
+  * 一个block以一个LabelType的label起始，包含了一串指令
+
+  * 为了instruction中 `format()` 函数，type设置为 `IRLabelType` ，于是 `typedIdentifier()` 输出 `label identifier `
+
+* 

@@ -1,5 +1,6 @@
-package chaos.compiler.middleend.llvmir.constant;
+package chaos.compiler.middleend.llvmir.hierarchy;
 
+import chaos.compiler.middleend.llvmir.constant.BaseConstant;
 import chaos.compiler.middleend.llvmir.type.IRBaseType;
 
 public class GlobalValue extends BaseConstant {

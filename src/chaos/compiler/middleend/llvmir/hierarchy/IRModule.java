@@ -1,12 +1,12 @@
 package chaos.compiler.middleend.llvmir.hierarchy;
 
 import chaos.compiler.middleend.llvmir.Struct;
-import chaos.compiler.middleend.llvmir.Value;
-import chaos.compiler.middleend.llvmir.constant.GlobalVariable;
 import chaos.compiler.middleend.llvmir.constant.StrConstant;
 import chaos.compiler.middleend.llvmir.type.*;
+import chaos.utility.Error;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class IRModule {
@@ -30,7 +30,31 @@ public class IRModule {
         builtinFuncList.add(new IRFunction("bot_str_sle", new IRBoolType(), IRPointerType.StringType, IRPointerType.StringType));
         builtinFuncList.add(new IRFunction("bot_str_sgt", new IRBoolType(), IRPointerType.StringType, IRPointerType.StringType));
         builtinFuncList.add(new IRFunction("bot_str_sge", new IRBoolType(), IRPointerType.StringType, IRPointerType.StringType));
+    }
 
+    public IRFunction getMalloc() {
+        return builtinFuncList.get(0);
+    }
+
+    public IRFunction getBuiltinFunction(String name) {
+        for (IRFunction builtinFunc : builtinFuncList) {
+            if (Objects.equals(builtinFunc.name, "_bot_str" + name))
+                return builtinFunc;
+            if (Objects.equals(builtinFunc.name, name))
+                return builtinFunc;
+        }
+        throw new Error("<codegen error> cannot find builtin function \"" + name + "\"");
+    }
+
+    public StrConstant getStrConstant(String data) {
+        for (StrConstant strConst : strConstList) {
+            if (Objects.equals(strConst.constData, data))
+                return strConst;
+        }
+        // generate a new string constant
+        StrConstant newStrConst = new StrConstant(data);
+        strConstList.add(newStrConst);
+        return newStrConst;
     }
 
 }

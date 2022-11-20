@@ -1,6 +1,6 @@
 package chaos.compiler.middleend.llvmir;
 
-import chaos.compiler.middleend.llvmir.instruction.BaseInst;
+import chaos.compiler.middleend.llvmir.instruction.MoveInst;
 import chaos.compiler.middleend.llvmir.type.IRBaseType;
 
 import java.util.*;
@@ -10,6 +10,7 @@ abstract public class Value {
     // value rename
     public static Boolean rename = false;
     public static HashMap<String, Integer> renameMap = new HashMap<>();
+    public Set<MoveInst> moveDefs = new HashSet<>();
 
     public static String rename(String rawName) {
         if (!rename) return rawName;
@@ -54,7 +55,7 @@ abstract public class Value {
         return "%" + name;
     }
 
-    public String typeIdentifier() {
+    public String typedIdentifier() {
         return type + " " + identifier();
     }
 

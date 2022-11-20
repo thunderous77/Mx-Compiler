@@ -1,13 +1,10 @@
 package chaos.compiler.middleend.llvmir.hierarchy;
 
 import chaos.compiler.middleend.llvmir.Value;
-import chaos.compiler.middleend.llvmir.constant.GlobalValue;
 import chaos.compiler.middleend.llvmir.type.IRBaseType;
 import chaos.compiler.middleend.llvmir.type.IRFunctionType;
-import chaos.compiler.middleend.llvmir.type.IRPointerType;
 import chaos.compiler.middleend.llvmir.type.IRVoidType;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class IRFunction extends GlobalValue {
@@ -35,6 +32,14 @@ public class IRFunction extends GlobalValue {
 
     public Value getArg(int index) {
         return this.getOperand(index);
+    }
+
+    public int getArgNum() {
+        return ((IRFunctionType) this.type).argTypes.size();
+    }
+
+    public IRBaseType getArgType(int index) {
+        return ((IRFunctionType) this.type).argTypes.get(index);
     }
 
     public int operandSize() {

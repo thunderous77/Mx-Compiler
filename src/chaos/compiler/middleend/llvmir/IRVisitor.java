@@ -7,10 +7,16 @@ import chaos.compiler.frontend.ast.node.expr.*;
 import chaos.compiler.frontend.ast.node.stmt.VarDefSingleNode;
 import chaos.compiler.frontend.utility.Commander;
 import chaos.compiler.frontend.utility.StringBuiltinFunc;
+import chaos.compiler.frontend.utility.registry.ClassRegistry;
 import chaos.compiler.frontend.utility.registry.FuncRegistry;
+import chaos.compiler.frontend.utility.registry.VarRegistry;
+import chaos.compiler.frontend.utility.type.BaseType;
 import chaos.compiler.middleend.llvmir.hierarchy.IRFunction;
 import chaos.compiler.middleend.llvmir.hierarchy.IRModule;
 import chaos.compiler.middleend.llvmir.type.IRPointerType;
+import chaos.compiler.middleend.llvmir.type.IRStructType;
+
+import java.util.ArrayList;
 
 public class IRVisitor implements ASTVisitor {
 
@@ -26,6 +32,7 @@ public class IRVisitor implements ASTVisitor {
     public void visit(RootNode node) {
         commander.push(node.scope);
         translator.setGlobalScope(node.scope);
+        builtinFuncDef(node);
 
         commander.pop();
     }
@@ -149,16 +156,53 @@ public class IRVisitor implements ASTVisitor {
 
     }
 
+    private void createInitFunc() {
+        FuncRegistry initRegistry = new FuncRegistry("_glb_init", BaseType.BuiltinType.VOID);
+        initRegistry.isBuiltin = false;
+
+    }
+
     private void builtinFuncDef(RootNode node) {
+        // malloc & string bottom function
+        module.setBottomFunction();
+
+        //global builtin function
         for (FuncRegistry builtinFuncRegistry : node.scope.builtinFuncList) {
             IRFunction buitlinFunc = new IRFunction(builtinFuncRegistry.name, translator.transFuncType(builtinFuncRegistry.type, null), module);
-        }
-        // string builtin function
-        for (FuncRegistry builtinFuncRegistry : StringBuiltinFunc.scope.funcList) {
-            IRFunction buitlinFunc = new IRFunction("_str_"+builtinFuncRegistry.name, translator.transFuncType(builtinFuncRegistry.type, IRPointerType.StringType), module);
-            module.
+            module.builtinFuncList.add(buitlinFunc);
+            builtinFuncRegistry.value = buitlinFunc;
         }
 
+        // string builtin function
+        for (FuncRegistry builtinFuncRegistry : StringBuiltinFunc.scope.funcList) {
+            IRFunction buitlinFunc = new IRFunction("_str_" + builtinFuncRegistry.name, translator.transFuncType(builtinFuncRegistry.type, IRPointerType.StringType), module);
+            module.builtinFuncList.add(buitlinFunc);
+            builtinFuncRegistry.value = buitlinFunc;
+        }
+    }
+
+    public void classDef(RootNode node) {
+        ArrayList<ClassRegistry> classRegList = new ArrayList<>();
+        // add class
+        for (BaseNode sonNode : node.sonNodes) {
+            IRStructType defClass = new IRStructType(((ClassDefNode) sonNode).classRegistry.name);
+            ((ClassDefNode) sonNode).classRegistry.value = defClass.struct;
+            module.classList.add(defClass.struct);
+            classRegList.add(((ClassDefNode) sonNode).classRegistry);
+        }
+
+        for (ClassRegistry classRegistry : classRegList) {
+            IRStructType defClass = (IRStructType) classRegistry.value.type;
+            // add member variable
+            for (VarRegistry memberVar : classRegistry.memberVars)
+                defClass.varTypeList.add(translator.transAllocaType(memberVar.type));
+            // add member function
+            for (FuncRegistry memberFunc : classRegistry.memberFuncs) {
+                IRFunction defMemeberFunc = new IRFunction(defClass.structName + "." + memberFunc.name, translator.transFuncType(memberFunc.type, new IRPointerType(defClass)), module);
+                module.funcList.add(defMemeberFunc);
+                memberFunc.value = defMemeberFunc;
+            }
+        }
     }
 
 }

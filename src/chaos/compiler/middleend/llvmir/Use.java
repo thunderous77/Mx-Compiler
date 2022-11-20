@@ -10,11 +10,15 @@ public class Use {
         this.value = value;
     }
 
-    public static Use getUseLink(User user, Value value) {
-        Use ret = new Use(user, value);
-        user.operandList.add(ret);
-        value.useList.add(ret);
-        return ret;
+    public static void getUseLink(User user, Value value) {
+        Use newUse = new Use(user, value);
+        user.operandList.add(newUse);
+        value.useList.add(newUse);
+    }
+
+    public void removeUse() {
+        value.useList.remove(this);
+        user.operandList.remove(this);
     }
 
 }

@@ -1,4 +1,4 @@
-package chaos.compiler.middleend.llvmir.constant;
+package chaos.compiler.middleend.llvmir.hierarchy;
 
 import chaos.compiler.middleend.llvmir.Value;
 import chaos.compiler.middleend.llvmir.type.IRBaseType;

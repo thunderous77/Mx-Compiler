@@ -8,8 +8,8 @@ abstract public class User extends Value {
 
     public final LinkedList<Use> operandList = new LinkedList<>();
 
-    public User(String name,IRBaseType type) {
-        super(name,type);
+    public User(String name, IRBaseType type) {
+        super(name, type);
     }
 
     public void addOperand(Value value) {
@@ -18,6 +18,11 @@ abstract public class User extends Value {
 
     public Value getOperand(int index) {
         return operandList.get(index).value;
+    }
+
+    public void resetOperand(int index, Value value) {
+        operandList.get(index).removeUse();
+        Use.getUseLink(this, value);
     }
 
     public int getOperandSize() {

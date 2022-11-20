@@ -1,7 +1,6 @@
 package chaos.compiler.middleend.llvmir.constant;
 
-import chaos.compiler.middleend.llvmir.IRVisitor;
-import chaos.compiler.middleend.llvmir.type.IRArrayType;
+import chaos.compiler.middleend.llvmir.hierarchy.GlobalValue;
 import chaos.compiler.middleend.llvmir.type.IRArrayType;
 import chaos.compiler.middleend.llvmir.type.IRIntergerType;
 
