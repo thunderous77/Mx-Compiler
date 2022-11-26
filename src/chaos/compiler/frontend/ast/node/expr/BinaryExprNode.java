@@ -79,6 +79,14 @@ public class BinaryExprNode extends ExprBaseNode {
         }
     }
 
+    public boolean isCompare() {
+        return opcode == binaryOp.LESS || opcode == binaryOp.LESS_EQUAL || opcode == binaryOp.GREATER || opcode == binaryOp.GREATER_EQUAL || opcode == binaryOp.EQUAL || opcode == binaryOp.NOT_EQUAL;
+    }
+
+    public boolean isArith() {
+        return opcode == binaryOp.ADD || opcode == binaryOp.SUB || opcode == binaryOp.MUL || opcode == binaryOp.DIV || opcode == binaryOp.MOD || opcode == binaryOp.SHIFT_LEFT || opcode == binaryOp.SHIFT_RIGHT || opcode == binaryOp.BIT_OR || opcode == binaryOp.BIT_XOR || opcode == binaryOp.BIT_AND;
+    }
+
     @Override
     public void accept(ASTVisitor vis) {
         vis.visit(this);

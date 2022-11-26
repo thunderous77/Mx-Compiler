@@ -8,6 +8,7 @@ import chaos.compiler.frontend.utility.scope.FuncScope;
 import chaos.compiler.frontend.utility.scope.LoopScope;
 import chaos.compiler.frontend.utility.scope.ClassScope;
 import chaos.compiler.frontend.utility.type.VarType;
+import chaos.utility.Pair;
 
 public class Commander {
     public Stack<BaseScope> scopeStack;
@@ -88,6 +89,19 @@ public class Commander {
         if (this.scopeStack.peek() instanceof ClassScope)
             this.currentClass = null;
         this.scopeStack.pop();
+    }
+
+    public Pair<VarRegistry, Boolean> queryVarforIR(String name) {
+        VarRegistry retVar = null;
+        Boolean retBool = false;
+        for (int i = scopeStack.size() - 1; i >= 0; --i) {
+            retVar = scopeStack.get(i).queryVar(name);
+            if (retVar != null && retVar.value != null) {
+                if (scopeStack.get(i) instanceof ClassScope) retBool = true;
+                break;
+            }
+        }
+        return new Pair<>(retVar, retBool);
     }
 
 }

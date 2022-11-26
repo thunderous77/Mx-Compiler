@@ -1,17 +1,17 @@
 package chaos.compiler.middleend.llvmir.hierarchy;
 
-import chaos.compiler.middleend.llvmir.Value;
+import chaos.compiler.middleend.llvmir.IRValue;
 import chaos.compiler.middleend.llvmir.type.IRBaseType;
 import chaos.compiler.middleend.llvmir.type.IRFunctionType;
 import chaos.compiler.middleend.llvmir.type.IRVoidType;
 
 import java.util.LinkedList;
 
-public class IRFunction extends GlobalValue {
+public class IRFunction extends IRGlobalValue {
 
     public IRModule parentModule;
     public IRBlock entryBlock, exitBlock;
-    public Value retValue;
+    public IRValue retValuePtr;
     public LinkedList<IRBlock> blockList = new LinkedList<>();
 
     public IRFunction(String name, IRBaseType functionType, IRModule parentModule) {
@@ -30,7 +30,7 @@ public class IRFunction extends GlobalValue {
         return ((IRFunctionType) this.type).match(IRVoidType.VOID);
     }
 
-    public Value getArg(int index) {
+    public IRValue getArg(int index) {
         return this.getOperand(index);
     }
 

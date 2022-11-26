@@ -3,28 +3,29 @@ import chaos.compiler.frontend.ast.node.RootNode;
 import chaos.compiler.frontend.parser.MxLexer;
 import chaos.compiler.frontend.parser.MxParser;
 import chaos.compiler.frontend.semantic.SemanticChecker;
+import chaos.compiler.middleend.llvmir.IRBuilder;
+import chaos.compiler.middleend.llvmir.IRPrinter;
+import chaos.compiler.middleend.llvmir.hierarchy.IRModule;
 import chaos.utility.Error;
 import chaos.utility.MxErrorListener;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-//import java.io.File;
-//import java.io.FileInputStream;
+import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.PrintStream;
 
 
 public class Compiler {
     public static void main(String[] args) throws Exception {
         try {
-            //File testCode = new File("Compiler-2021-testcases/sema/basic-package/basic-1.mx");
-
-//            InputStream testCodeStream = new FileInputStream(system);
-
-            InputStream testCodeStream = System.in;
+            FileInputStream input = new FileInputStream("D:\\Sam\\program\\Masterball\\judge\\testcases\\codegen\\test.mx");
+            PrintStream output = new PrintStream("D:\\Sam\\program\\Masterball\\judge\\testcases\\codegen\\my_llvm_out.ll");
+//            InputStream input = System.in;
 
             // get lexer
-            MxLexer lexer = new MxLexer(CharStreams.fromStream(testCodeStream));
+            MxLexer lexer = new MxLexer(CharStreams.fromStream(input));
             lexer.removeErrorListeners();
             lexer.addErrorListener(new MxErrorListener());
 
@@ -39,6 +40,12 @@ public class Compiler {
 
             SemanticChecker semanticChecker = new SemanticChecker();
             semanticChecker.visit(rootNode);
+
+            // llvm ir
+            IRModule irModule = new IRBuilder(rootNode).module;
+            IRPrinter printer = new IRPrinter("test",output);
+            printer.printModule(irModule);
+            output.close();
         } catch (Error e) {
             e.show_error();
             throw new RuntimeException();

@@ -10,7 +10,7 @@ public class FuncRegistry extends BaseRegistry {
 
     public FuncType type;
     public FuncScope scope;
-    public ArrayList<VarRegistry> funcArgs;
+    public ArrayList<VarRegistry> funcArgsList;
     public boolean isBuiltin;
 
     //default function
@@ -19,7 +19,7 @@ public class FuncRegistry extends BaseRegistry {
         this.scope = new FuncScope();
         this.type = new FuncType();
         this.type.retType = new VarType(BaseType.BuiltinType.VOID);
-        funcArgs = new ArrayList<>();
+        funcArgsList = new ArrayList<>();
         isBuiltin = false;
     }
 
@@ -29,11 +29,11 @@ public class FuncRegistry extends BaseRegistry {
         this.scope = new FuncScope();
         this.type = new FuncType();
         this.type.retType = new VarType(retType);
-        funcArgs = new ArrayList<>();
+        funcArgsList = new ArrayList<>();
         isBuiltin = true;
 
         for (int i = 0; i < args.length; ++i) {
-            funcArgs.add(args[i]);
+            funcArgsList.add(args[i]);
             type.funcArgsType.add(args[i].type);
         }
     }
@@ -43,14 +43,14 @@ public class FuncRegistry extends BaseRegistry {
         super("", context);
         this.scope = new FuncScope();
         this.type = new FuncType();
-        funcArgs = new ArrayList<>();
+        funcArgsList = new ArrayList<>();
         isBuiltin = false;
 
         MxParser.ParameterListContext parameterListContext = context.parameterList();
         if (parameterListContext != null) {
             for (int i = 0; i < parameterListContext.varDefType().size(); ++i) {
                 VarRegistry varRegistry = new VarRegistry(parameterListContext.Identifier(i).toString(), parameterListContext.varDefType(i));
-                funcArgs.add(varRegistry);
+                funcArgsList.add(varRegistry);
                 type.funcArgsType.add(varRegistry.type);
             }
         }
@@ -61,7 +61,7 @@ public class FuncRegistry extends BaseRegistry {
         super(context.Identifier().toString(), context);
         this.scope = new FuncScope();
         this.type = new FuncType();
-        funcArgs = new ArrayList<>();
+        funcArgsList = new ArrayList<>();
         type.retType = new VarType(context.varDefType(), true);
         isBuiltin = false;
 
@@ -69,7 +69,7 @@ public class FuncRegistry extends BaseRegistry {
         if (parameterListContext != null) {
             for (int i = 0; i < parameterListContext.varDefType().size(); ++i) {
                 VarRegistry varRegistry = new VarRegistry(parameterListContext.Identifier(i).toString(), parameterListContext.varDefType(i));
-                funcArgs.add(varRegistry);
+                funcArgsList.add(varRegistry);
                 type.funcArgsType.add(varRegistry.type);
             }
         }
@@ -80,7 +80,7 @@ public class FuncRegistry extends BaseRegistry {
         super(context.Identifier().toString(), context);
         this.scope = new FuncScope();
         this.type = new FuncType();
-        funcArgs = new ArrayList<>();
+        funcArgsList = new ArrayList<>();
         type.retType = new VarType(BaseType.BuiltinType.VOID);
         isBuiltin = false;
     }

@@ -13,6 +13,18 @@ public class AtomExprNode extends ExprBaseNode {
         this.context=context;
     }
 
+
+
+    // ir strConstant
+    public String getString() {
+        String str=context.StringConstant().toString();
+        return str.substring(1, str.length() - 1).replace("\\\\", "\\")
+                .replace("\\n", "\n")
+                .replace("\\r", "\r")
+                .replace("\\t", "\t")
+                .replace("\\\"", "\"");
+    }
+
     @Override
     public void accept(ASTVisitor vis) {
         vis.visit(this);

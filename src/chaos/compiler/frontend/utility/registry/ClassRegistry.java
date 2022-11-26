@@ -18,4 +18,11 @@ public class ClassRegistry extends BaseRegistry {
         memberVars = new ArrayList<>();
     }
 
+    // IR GEPInst
+    public int getMemberIndex(String name) {
+        for (int i = 0; i < memberVars.size(); i++)
+            if (memberVars.get(i).name.equals(name)) return i;
+        return -1;
+    }
+
 }

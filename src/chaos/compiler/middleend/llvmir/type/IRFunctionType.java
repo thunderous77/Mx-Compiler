@@ -5,14 +5,14 @@ import java.util.ArrayList;
 public class IRFunctionType extends IRBaseType {
 
     // record str / class private function
-    IRBaseType methodfrom;
+    public IRBaseType methodFrom;
     public IRBaseType retType;
     public ArrayList<IRBaseType> argTypes;
 
     // init retType
-    public IRFunctionType(IRBaseType retType, IRBaseType methodfrom) {
+    public IRFunctionType(IRBaseType retType, IRBaseType methodFrom) {
         this.retType = retType;
-        this.methodfrom = methodfrom;
+        this.methodFrom = methodFrom;
         argTypes = new ArrayList<>();
     }
 

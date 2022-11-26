@@ -1,8 +1,7 @@
 package chaos.compiler.middleend.llvmir.type;
 
-// ArrayType in LLVM IR
 // only use it to implement string
-// Array in MxStar is compiled to Pointer.
+// real array is compiled to Pointer.
 
 public class IRArrayType extends IRBaseType {
     public IRBaseType elementType;

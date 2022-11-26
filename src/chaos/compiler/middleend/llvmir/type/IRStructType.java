@@ -1,18 +1,18 @@
 package chaos.compiler.middleend.llvmir.type;
 
-import chaos.compiler.middleend.llvmir.Struct;
+import chaos.compiler.middleend.llvmir.IRStruct;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class IRStructType extends IRBaseType {
     public final String structName;
-    public final Struct struct;
+    public final IRStruct struct;
     public ArrayList<IRBaseType> varTypeList = new ArrayList<>();
 
     public IRStructType(String structName) {
         this.structName = structName;
-        struct = new Struct("class." + structName, this);
+        struct = new IRStruct("class." + structName, this);
     }
 
     @Override

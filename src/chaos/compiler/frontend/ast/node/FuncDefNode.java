@@ -19,7 +19,7 @@ public class FuncDefNode extends BaseNode {
     }
 
     public boolean isValidMainFunc() {
-        return Objects.equals(funcRegistry.name, "main") && funcRegistry.type.retType.match(BaseType.BuiltinType.INT) && funcRegistry.funcArgs.size() == 0;
+        return Objects.equals(funcRegistry.name, "main") && funcRegistry.type.retType.match(BaseType.BuiltinType.INT) && funcRegistry.funcArgsList.size() == 0;
     }
 
     @Override

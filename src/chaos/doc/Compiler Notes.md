@@ -120,9 +120,10 @@
 
 ### My LLVM IR
 
-* 概要
+* SSA
 
-  
+  * SSA 要求的是在**静态**，即仅从代码文本层面可以看出的单一赋值，而非运行时只会被赋值一次
+  * 我们通过 Value 中的 `rename()` 函数实现
 
 * [Type](https://blog.csdn.net/weixin_42654107/article/details/122862209#:~:text=llvm%3A%3A,ArrayType%20ArrayType%E6%98%AF1%E7%A7%8D%E5%B0%86%E5%85%83%E7%B4%A0%E5%9C%A8%E5%86%85%E5%AD%98%E4%B8%AD%E9%A1%BA%E5%BA%8F%E6%8E%92%E5%88%97%E7%9A%84%E7%B1%BB%E5%9E%8B%EF%BC%8C%E6%9C%892%E4%B8%AA%E5%B1%9E%E6%80%A7%EF%BC%9Asize%E5%92%8C%E5%85%83%E7%B4%A0%E7%B1%BB%E5%9E%8B%E3%80%82)
 
@@ -140,13 +141,15 @@
     
   * `StructType`
   
-    即Semantic中的class，`Struct` 保存了class的Valu
+    即 Semantic中的 class，`Struct` 保存了 class 的 Value 传给 ClassRegistry，而 `StructType` 则作为一种 type 与 class 对应
   
-    e传给ClassRegistry，而 `StructType` 则作为一种type与class对应
-    
+  * `ArrayType`
+  
+    只用于 String，真正的数组是用指针实现的
+  
   * `FunctionType`
   
-    参数 `methodfrom` 表示函数是某些类型（`IRBaseType`）所专有的（string 或者 class）
+    参数 `methodFrom` 表示函数是某些类型（`IRBaseType`）所专有的（string 或者 class）
     
   * `size()` 函数
   
@@ -162,10 +165,10 @@
 
   <img src="C:\Users\27595\AppData\Roaming\Typora\typora-user-images\image-20221109173451304.png" style="zoom:50%">
 
-  * 一个Value可以有多个Use，每个Use对应一个User
-  * 每个value有 `identifier()` 函数，默认是 `%name` （寄存器），全局变量是 `@name`
+  * 一个 Value 可以有多个 Use，每个 Use 对应一个 User
+  * 每个 value 有 `identifier()` 函数，默认是 `%name` （寄存器），全局变量是 `@name`
   
-  * 一个User可以有多个Use，每个Use对应一个Value
+  * 一个 User 可以有多个 Use，每个 Use 对应一个 Value
   
   * **Use类的核心就是如何让Value和User高效地双向关联**
   
@@ -177,24 +180,54 @@
 
 * [Instruction](https://blog.csdn.net/qq_37206105/article/details/115274241)
 
-  * Instruction的Value表示它的返回值
-  * `format()` 返回一行instruction指令
-  * 同时instruction还是value，因此也有 `identifier()` 函数返回标识符
+  * Instruction 的 Value 表示它的返回值
+  * `format()` 返回一行 instruction 指令
+  * 同时 instruction 还是 value，因此也有 `identifier()` 函数返回标识符
   
-  * `BinaryInst` Semantic中的运算二元关系
+  * `BinaryInst` Semantic 中的运算二元关系
   
   * `GEPInst`
   
     <img src="C:\Users\27595\AppData\Roaming\Typora\typora-user-images\image-20221120222752580.png" style="zoom:30%">
   
-    为了简化，我们只使用1/2个index（`i32 1`），因为一个含有多个index的GEP可以拆分成多个1/2index的GEP
+    为了简化，我们只使用 1/2 个 index（`i32 1`），因为一个含有多个index的GEP可以拆分成多个1/2 index 的 GEP
   
     [这里](https://blog.csdn.net/qq_42570601/article/details/107581608)对于第一个和第二个参数解释很清楚
+    
+    `getelementptr %A, ptr %B, i32 a(,i32 b)` 代表先移动a*A，再移动b位（struct里，一个变量算一位）
   
 * IRBlock
 
-  * 一个block以一个LabelType的label起始，包含了一串指令
+  * 一个 block 以一个 LabelType 的 label 起始，包含了一串指令
 
-  * 为了instruction中 `format()` 函数，type设置为 `IRLabelType` ，于是 `typedIdentifier()` 输出 `label identifier `
+  * 为了 instruction 中 `format()` 函数，type 设置为 `IRLabelType` ，于是 `typedIdentifier()` 输出 `label identifier `
 
-* 
+* IRBuilder
+
+  * varRegistry 的 value 里存地址，因为全局变量是存在内存里的，每次去 varRgistry 里找地址，然后去内存里读
+
+  * 任何有声明语句的变量都会在内存里开一块空间，而寄存器是用来存运算的中间值的
+
+  * `RootNode`
+
+    直接子节点中的 VarDefNode 一定是全局变量，开一个 bool `isGloabalVar`，开的时候访问 VarDefNode 时声明全局变量，扫完关掉
+
+    类的成员函数第一个参数额外输入 `this` 指针，指向类（的 type）
+
+  * `FuncDefNode`
+
+    除了 main 函数（一定返回0，直接 `ret i32 0` ），其他函数的返回值和参数都要在内存中开一块空间
+
+  * `unaryNode`
+  
+    BIT_NOT: -1 的原码 `100001`，反码（原码除首位取反） `111110`，补码（反码+1） `111111`
+  
+  * `newExprNode`
+  
+    新建数组的时候，在内存里，每一维（如果是多维数组）的头指针前先存一个 `i32` 的 size，便于数组内建函数 `a.size()` 查找数组信息，调用时只要用 GEPInst 往头指针之前找一个 
+  
+  * `BinaryNode`
+  
+    逻辑运算实现了强制跳转，即如果已经能算出结果将不计算后面的 expression 
+  
+  *  

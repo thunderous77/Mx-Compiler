@@ -119,7 +119,7 @@ public class SemanticChecker implements ASTVisitor {
     @Override
     public void visit(LambdaExprNode node) {
         commander.push(node.funcRegistry.scope);
-        for (VarRegistry varRegistry : node.funcRegistry.funcArgs) {
+        for (VarRegistry varRegistry : node.funcRegistry.funcArgsList) {
             if (varRegistry.type.builtinType == BaseType.BuiltinType.CLASS && commander.queryClass(varRegistry.type.name) == null)
                 throw new Error(node.pos, "\"" + varRegistry.type.name + "\" is undefined");
             commander.register(varRegistry);
@@ -295,7 +295,7 @@ public class SemanticChecker implements ASTVisitor {
         commander.push(node.funcRegistry.scope);
 
         // query class builtinType
-        for (VarRegistry registry : node.funcRegistry.funcArgs) {
+        for (VarRegistry registry : node.funcRegistry.funcArgsList) {
             if (registry.type.builtinType == BaseType.BuiltinType.CLASS &&
                     commander.queryClass(registry.type.name) == null) {
                 throw new Error(node.pos, "\"" + registry.type.name + "\" is undefined");
