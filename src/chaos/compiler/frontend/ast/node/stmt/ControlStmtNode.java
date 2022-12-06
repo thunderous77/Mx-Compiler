@@ -6,7 +6,7 @@ import chaos.compiler.frontend.ast.node.ASTVisitor;
 public class ControlStmtNode extends StmtBaseNode {
 
     public enum controlOp {
-        BREAK, CONTINUE;
+        BREAK, CONTINUE
     }
 
     public controlOp opcode;
@@ -14,10 +14,10 @@ public class ControlStmtNode extends StmtBaseNode {
     public ControlStmtNode(Position pos, String opcode) {
         super(pos);
         switch (opcode) {
-            case "Break":
+            case "break":
                 this.opcode = controlOp.BREAK;
                 break;
-            case "Continue":
+            case "continue":
                 this.opcode = controlOp.CONTINUE;
                 break;
         }

@@ -28,9 +28,8 @@ public abstract class IRBaseInst extends IRUser {
         if (parentBlock != null) parentBlock.addInstAtFirst(this);
     }
 
-    public abstract String format();
+    public abstract String print();
 
-    public boolean isTerminator() {return false;}
 
     public boolean isValueSelf() {return true;}
 

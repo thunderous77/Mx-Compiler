@@ -46,7 +46,7 @@ public class IRGEPInst extends IRBaseInst {
     }
 
     @Override
-    public String format() {
+    public String print() {
         // %t4 = getelementptr inbounds [10 x [20 x i32]], [10 x [20 x i32]]* %t3, i32 0, i32 5
         StringBuilder ret = new StringBuilder(this.identifier() + " = getelementptr inbounds " + ((IRPointerType) this.headPointer().type).pointedType + ", " + this.headPointer().typedIdentifier());
         for (int i = 0; i < this.indexNum(); ++i)

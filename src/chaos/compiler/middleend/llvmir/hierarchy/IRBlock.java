@@ -2,7 +2,9 @@ package chaos.compiler.middleend.llvmir.hierarchy;
 
 import chaos.compiler.middleend.llvmir.IRValue;
 import chaos.compiler.middleend.llvmir.instruction.IRBaseInst;
+import chaos.compiler.middleend.llvmir.instruction.IRBrInst;
 import chaos.compiler.middleend.llvmir.instruction.IRPhiInst;
+import chaos.compiler.middleend.llvmir.instruction.IRRetInst;
 import chaos.compiler.middleend.llvmir.type.IRLabelType;
 
 import java.util.ArrayList;
@@ -12,7 +14,6 @@ public class IRBlock extends IRValue {
 
     public LinkedList<IRBaseInst> instList = new LinkedList<>();
     public ArrayList<IRPhiInst> phiInstList = new ArrayList<>();
-    public Boolean isTerminated = false;
     public ArrayList<IRBlock> preBlockList = new ArrayList<>(), nextBlockList = new ArrayList<>();
 
     public IRBlock(String name, IRFunction parentFunction) {
@@ -21,11 +22,12 @@ public class IRBlock extends IRValue {
     }
 
     public void addInst(IRBaseInst inst) {
-        if (isTerminated) return;
+
         if (inst instanceof IRPhiInst)
             phiInstList.add((IRPhiInst) inst);
-        else instList.add(inst);
-        if (inst.isTerminator()) isTerminated = true;
+        // avoid add inst after IRRetInst or IRBrInst
+        else if (!isTerminated())
+            instList.add(inst);
     }
 
     public void addInstAtFirst(IRBaseInst inst) {
@@ -41,6 +43,10 @@ public class IRBlock extends IRValue {
     public void addLink(IRBlock nextBlock) {
         this.nextBlockList.add(nextBlock);
         nextBlock.preBlockList.add(this);
+    }
+
+    public boolean isTerminated() {
+        return instList.size() != 0 && ((instList.get(instList.size() - 1) instanceof IRRetInst) || (instList.get(instList.size() - 1) instanceof IRBrInst));
     }
 
 

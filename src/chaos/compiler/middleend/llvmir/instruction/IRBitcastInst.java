@@ -15,7 +15,7 @@ public class IRBitcastInst extends IRBaseInst {
         return this.getOperand(0);
     }
 
-    public String format() {
+    public String print() {
         // %bitcast = bitcast i8** %a to i8*;
         return this.identifier() + " = bitcast " + this.fromValue().typedIdentifier() + " to " + this.type;
     }

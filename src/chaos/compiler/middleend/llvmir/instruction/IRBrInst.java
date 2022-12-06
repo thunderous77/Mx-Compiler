@@ -49,17 +49,12 @@ public class IRBrInst extends IRBaseInst {
     }
 
     @Override
-    public boolean isTerminator() {
-        return true;
-    }
-
-    @Override
     public boolean isValueSelf() {
         return false;
     }
 
     @Override
-    public String format() {
+    public String print() {
         // br label %A
         // br i1 %comparison_result, label %A, label %B
         if (this.getOperandSize() == 1)

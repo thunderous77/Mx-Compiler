@@ -14,7 +14,7 @@ public class IRPhiInst extends IRBaseInst {
     }
 
     @Override
-    public String format() {
+    public String print() {
         // %indvar = phi i32 [ 0, %LoopHeader ], [ %nextindvar, %Loop ]
         String ret = this.identifier() + " = phi " + this.type + " ";
         for (int i = 0; i < this.getOperandSize(); i += 2) {

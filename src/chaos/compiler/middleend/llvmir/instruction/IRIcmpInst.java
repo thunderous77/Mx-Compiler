@@ -24,7 +24,7 @@ public class IRIcmpInst extends IRBaseInst {
     }
 
     @Override
-    public String format() {
+    public String print() {
         // %icmp = icmp slt i32 %i_value, 4
         return this.identifier() + " = icmp " + this.op + " " + this.lValue().typedIdentifier() + ", " + this.rValue().identifier();
     }

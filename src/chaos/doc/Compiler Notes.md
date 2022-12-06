@@ -153,7 +153,8 @@
     
   * `size()` 函数
   
-    为之后 `alloca` 操作做准备，返回byte值
+    * 为之后 `alloca` 操作做准备，返回byte值
+    * `IRPointerType` 的 size 是 8（64 位机）
   
 * [Constant](https://blog.csdn.net/weixin_42654107/article/details/123419630?spm=1001.2014.3001.5502)
 
@@ -210,14 +211,28 @@
 
   * `RootNode`
 
-    直接子节点中的 VarDefNode 一定是全局变量，开一个 bool `isGloabalVar`，开的时候访问 VarDefNode 时声明全局变量，扫完关掉
+    * 直接子节点中的 VarDefNode 一定是全局变量，开一个 bool `isGloabalVar`，开的时候访问 VarDefNode 时声明全局变量，扫完关掉
 
-    类的成员函数第一个参数额外输入 `this` 指针，指向类（的 type）
+    * 开一个 `globalVarInit` 的 IRFunction，其中存储全局变量的赋值和 new 语句，在 main 函数一开始调用它
 
+    * 最后遍历所有 Block，如果没有结束指令（`IRRetInst` 和 `IRBrInst`）就指向所在 Function 的 exitblock
+
+      因为会出现以下例子
+
+      ```C++
+      // void 函数
+      void a() {A;}
+      
+      // main 函数 return 0 省略
+      int main() {A;}
+      ```
+  
   * `FuncDefNode`
-
-    除了 main 函数（一定返回0，直接 `ret i32 0` ），其他函数的返回值和参数都要在内存中开一块空间
-
+  
+    * 除了 main 函数，其他函数的返回值和参数都要在内存中开一块空间
+  
+    * 在这里在 exitBlock 中开了两条指令，分别是从内存中读取返回值（`IRLoadInst`），以及返回这个值（`IRRetInst`），之后 visit ReturnStmtNode 只需要修改内存中的返回值，然后跳转到 exitBlock 即可
+  
   * `unaryNode`
   
     BIT_NOT: -1 的原码 `100001`，反码（原码除首位取反） `111110`，补码（反码+1） `111111`
@@ -228,6 +243,8 @@
   
   * `BinaryNode`
   
-    逻辑运算实现了强制跳转，即如果已经能算出结果将不计算后面的 expression 
+    逻辑运算实现了强制跳转，即如果已经能算出结果将不计算后面的 expression，之后的复制通过 phi 指令进行 
   
-  *  
+  * `FuncDeclare`
+  
+    类的成员函数第一个参数额外输入 `this` 指针，指向类（的 type）

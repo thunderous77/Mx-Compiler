@@ -22,7 +22,7 @@ public class StrConstant extends IRGlobalValue {
         return o instanceof StrConstant && Objects.equals(constData, ((StrConstant) o).constData);
     }
 
-    public String constDataFormat() {
+    public String constDataPrint() {
         String ret = "\"" + constData.replace("\\", "\\\\")
                 .replace("\n", "\\0A")
                 .replace("\r", "\\0D")

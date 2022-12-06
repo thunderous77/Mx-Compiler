@@ -22,7 +22,7 @@ public class IRMoveInst extends IRBaseInst {
     }
 
     @Override
-    public String format() {
+    public String print() {
         return "move " + this.dest().identifier() + ", " + this.source().identifier();}
 
     @Override

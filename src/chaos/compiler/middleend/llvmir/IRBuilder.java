@@ -27,6 +27,7 @@ public class IRBuilder implements ASTVisitor {
     private final IRCurrent current = new IRCurrent();
     private final IRTranslator translator = new IRTranslator();
     private boolean isGlobalVar = true;
+    private IRFunction globalVarInitFunc = new IRFunction("global_var_init", new IRFunctionType(new IRVoidType(), null), module);
 
     public IRBuilder(RootNode rootNode) {
         this.visit(rootNode);
@@ -42,22 +43,31 @@ public class IRBuilder implements ASTVisitor {
 
         // class
         classDeclare(node);
+
         // function
         for (BaseNode sonNode : node.sonNodes)
             if (sonNode instanceof FuncDefNode) funcDeclare((FuncDefNode) sonNode);
+
         // global variable
-        IRFunction globalVarInitFunc = new IRFunction("global_var_init", new IRVoidType(), module);
         module.funcList.add(globalVarInitFunc);
         current.function = globalVarInitFunc;
         current.block = globalVarInitFunc.entryBlock;
         for (BaseNode sonNode : node.sonNodes)
             if (sonNode instanceof VarDefStmtNode) sonNode.accept(this);
         isGlobalVar = false;
+        new IRBrInst(globalVarInitFunc.exitBlock, current.block);
         current.block = globalVarInitFunc.exitBlock;
         new IRRetInst(globalVarInitFunc.exitBlock);
 
+        // common nodes
         for (BaseNode sonNode : node.sonNodes)
             if (!(sonNode instanceof VarDefStmtNode)) sonNode.accept(this);
+
+        // terminate all blocks
+        for (IRFunction function : module.funcList) {
+            for (IRBlock block : function.blockList)
+                if (!block.isTerminated()) new IRBrInst(function.exitBlock, block);
+        }
 
         commander.pop();
     }
@@ -87,10 +97,18 @@ public class IRBuilder implements ASTVisitor {
         current.function = (IRFunction) node.funcRegistry.value;
         current.block = current.function.entryBlock;
 
-        if (Objects.equals(node.funcRegistry.name, "main"))
-            new IRRetInst(new IRIntergerConstant(0), current.function.exitBlock);
-        else if (!node.funcRegistry.type.retType.match(BaseType.BuiltinType.VOID)) {
+        if (!node.funcRegistry.type.retType.match(BaseType.BuiltinType.VOID)) {
             current.function.retValuePtr = memAlloca("func.ret", translator.transAllocaType(node.funcRegistry.type.retType));
+            // main function
+            if (Objects.equals(node.funcRegistry.name, "main")) {
+                // start with running global variable initiate function
+                new IRCallInst(globalVarInitFunc, current.block);
+                // store 0 as default return value
+                memStore(current.function.retValuePtr, new IRIntergerConstant(0));
+            }
+
+            // initiate return statement here
+            // in ReturnStmtNode we only store the return value
             new IRRetInst(memLoad(current.function.retValuePtr, current.function.exitBlock), current.function.exitBlock);
         } else new IRRetInst(current.function.exitBlock);
 
@@ -241,7 +259,7 @@ public class IRBuilder implements ASTVisitor {
         node.initVarDefSingleNode.forEach(sonNode -> sonNode.accept(this));
         new IRBrInst(conditionBlock, current.block);
 
-        // body block
+        // condition block
         current.block = conditionBlock;
         if (node.conditionNode != null) {
             node.conditionNode.accept(this);
@@ -268,7 +286,7 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(ReturnStmtNode node) {
-        if (node.retNode != null && !node.retNode.type.match(BaseType.BuiltinType.VOID) && !Objects.equals(current.function.name, "main")) {
+        if (node.retNode != null && !node.retNode.type.match(BaseType.BuiltinType.VOID)) {
             node.retNode.accept(this);
             memStore(current.function.retValuePtr, node.retNode.value);
         }
@@ -288,8 +306,9 @@ public class IRBuilder implements ASTVisitor {
     @Override
     public void visit(AssignExprNode node) {
         IRValue leftPtr;
-        if (node.lNode instanceof AtomExprNode && node.lNode.type instanceof VarType)
-            // only need memory address
+        if (node.lNode instanceof AtomExprNode && node.lNode.type instanceof VarType && current.classRegistry == null)
+            // condition: lNode is global variable (is variable in AtomExprNode except class member)
+            // small optimizer: only need memory address
             leftPtr = queryGlobalVarStorePtr((AtomExprNode) node.lNode);
         else {
             node.lNode.accept(this);
@@ -343,6 +362,12 @@ public class IRBuilder implements ASTVisitor {
 
         ArrayList<IRValue> argValueList = new ArrayList<>();
 
+        // array.size() -> skip
+        if (!(node.funcCallNode.value.type instanceof IRFunctionType)){
+            node.value = node.funcCallNode.value;
+            return;
+        }
+
         // member function -> add "this" pointer as the first argument
         if (((IRFunctionType) node.funcCallNode.value.type).methodFrom != null) {
             if (node.funcCallNode instanceof MemberExprNode)
@@ -382,7 +407,7 @@ public class IRBuilder implements ASTVisitor {
             // string.builtinFunction
             node.value = StringBuiltinFunc.scope.queryFunc(node.memberName).value;
         else {
-            // class.member/member function
+            // class.member / member function
             String className = ((VarType) node.superNode.type).name;
             ClassRegistry classRegistry = commander.queryClass(className);
 
@@ -402,7 +427,7 @@ public class IRBuilder implements ASTVisitor {
             if (node.type.match(BaseType.BuiltinType.CLASS)) {
                 ClassRegistry classRegistry = commander.queryClass(((VarType) node.type).name);
                 // malloc a place and bitcast the i8* to "this" pointer (node.value)
-                node.value = new IRBitcastInst(new IRCallInst(module.getMallocFunc(), current.block, new IRIntergerConstant((classRegistry.value.type).size()), current.block), new IRPointerType(classRegistry.value.type), current.block);
+                node.value = new IRBitcastInst(new IRCallInst(module.getMallocFunc(), current.block, new IRIntergerConstant((classRegistry.value.type).size()), current.block).noalias(), new IRPointerType(classRegistry.value.type), current.block);
                 // all the member function need a "this" pointer as the first argument
                 // call construction function
                 new IRCallInst((IRFunction) classRegistry.scope.queryFunc(classRegistry.name).value, current.block, node.value);
@@ -592,9 +617,9 @@ public class IRBuilder implements ASTVisitor {
     }
 
     private IRValue arrayMalloc(ArrayList<IRValue> dimensionSizeList, int currentDim, IRBaseType elementType) {
-        IRValue currentDimSize = new IRBinaryInst("mul", IRIntergerType.INT32, dimensionSizeList.get(currentDim), new IRIntergerConstant(elementType.size()), current.block);
-        IRValue mallocSize = new IRBinaryInst("add", IRIntergerType.INT32, currentDimSize, new IRIntergerConstant(IRIntergerType.INT32.size()), current.block);
-        IRValue mallocPtr = new IRCallInst(module.getMallocFunc(), current.block, mallocSize);
+        IRValue dataSize = new IRBinaryInst("mul", IRIntergerType.INT32, dimensionSizeList.get(currentDim), new IRIntergerConstant(elementType.size()), current.block);
+        IRValue mallocSize = new IRBinaryInst("add", IRIntergerType.INT32, dataSize, new IRIntergerConstant(4), current.block);
+        IRValue mallocPtr = new IRCallInst(module.getMallocFunc(), current.block, mallocSize).noalias();
 
         IRValue sizePtr = new IRBitcastInst(mallocPtr, new IRPointerType(IRIntergerType.INT32), current.block);
         memStore(sizePtr, dimensionSizeList.get(currentDim));

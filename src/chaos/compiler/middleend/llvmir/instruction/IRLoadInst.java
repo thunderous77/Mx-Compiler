@@ -16,9 +16,9 @@ public class IRLoadInst extends IRBaseInst {
     }
 
     @Override
-    public String format() {
-        // %load = load <type>, <type*> %destPtr
-        return this.identifier() + " = load " + this.type + ", " + this.loadPtr().typedIdentifier();
+    public String print() {
+        // %load = load <type>, <type*> %destPtr, align <size>
+        return this.identifier() + " = load " + this.type + ", " + this.loadPtr().typedIdentifier() + ", align " + this.type.size();
     }
 
     @Override

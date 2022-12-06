@@ -29,12 +29,7 @@ public class IRRetInst extends IRBaseInst {
     }
 
     @Override
-    public boolean isTerminator() {
-        return true;
-    }
-
-    @Override
-    public String format() {
+    public String print() {
         String ret = "ret " + this.type;
         if (!isVoid()) ret += " " + this.retValue().identifier();
         return ret;

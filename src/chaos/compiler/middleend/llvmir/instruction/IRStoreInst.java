@@ -31,13 +31,10 @@ public class IRStoreInst extends IRBaseInst {
     }
 
     @Override
-    public String format() {
+    public String print() {
         // store i32 %1, i32* %i, align 4
         // nullptr has the same type with its pointedType
-        if (this.storeValue() instanceof IRNullPointerConstant)
-            return "store " + ((IRPointerType) this.storePtr().type).pointedType + " " + this.storeValue().identifier() + ", " + this.storePtr().typedIdentifier() + ", align " + this.type.size();
-        else
-            return "store " + this.storeValue().typedIdentifier() + ", " + this.storePtr().typedIdentifier() + ", align " + this.type.size();
+        return "store " + ((IRPointerType) this.storePtr().type).pointedType + " " + this.storeValue().identifier() + ", " + this.storePtr().typedIdentifier() + ", align " + this.type.size();
     }
 
     @Override

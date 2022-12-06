@@ -10,6 +10,8 @@ import java.util.ArrayList;
 
 public class IRCallInst extends IRBaseInst {
 
+    boolean noaliasFlag = false;
+
     public IRCallInst(IRFunction callFunc, IRBlock parentBlock, ArrayList<IRValue> callArgs) {
         super(callFunc.name + ".call", ((IRFunctionType) callFunc.type).retType, parentBlock);
         this.addOperand(callFunc);
@@ -36,11 +38,17 @@ public class IRCallInst extends IRBaseInst {
         return !callFunc().isVoid();
     }
 
+    public IRCallInst noalias() {
+        noaliasFlag = true;
+        return this;
+    }
+
     @Override
-    public String format() {
+    public String print() {
         // %call = call i32 @foo(i32 1)
         StringBuilder ret = new StringBuilder((this.type.match(new IRVoidType())) ? "" : this.identifier() + " = ");
         ret.append("call ");
+        if (noaliasFlag) ret.append("noalias ");
         ret.append(callFunc().typedIdentifier()).append("(");
         for (int i = 0; i < this.callFunc().getArgNum(); i++) {
             ret.append(this.callFunc().getArgType(i)).append(" ").append(this.getArg(i).identifier());

@@ -16,7 +16,7 @@ public class IRAllocaInst extends IRBaseInst {
     }
 
     @Override
-    public String format() {
+    public String print() {
         // %alloca = alloca <type>, align <size>
         return this.identifier() + " = alloca " + this.pointedType + ", align " + this.pointedType.size();
     }

@@ -30,7 +30,7 @@ public class IRBinaryInst extends IRBaseInst {
     }
 
     @Override
-    public String format() {
+    public String print() {
         // %add = add i32 %A, %B
         return this.identifier() + " = " + this.op + " " + this.type + " " + this.leftValue().identifier() + ", " + this.rightValue().identifier();
     }

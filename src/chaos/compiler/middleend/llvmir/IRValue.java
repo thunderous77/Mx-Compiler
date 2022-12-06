@@ -1,5 +1,6 @@
 package chaos.compiler.middleend.llvmir;
 
+import chaos.compiler.middleend.llvmir.constant.IRNullPointerConstant;
 import chaos.compiler.middleend.llvmir.instruction.IRMoveInst;
 import chaos.compiler.middleend.llvmir.type.IRBaseType;
 
@@ -52,7 +53,9 @@ public class IRValue {
     }
 
     public String identifier() {
-        return "%" + name;
+        if (this instanceof IRNullPointerConstant)
+            return "null";
+        else return "%" + name;
     }
 
     public String typedIdentifier() {

@@ -9,7 +9,7 @@ public class IRStruct extends IRValue {
         super(name, type);
     }
 
-    public IRStructType struct() {
+    public IRStructType type() {
         return (IRStructType) this.type;
     }
 

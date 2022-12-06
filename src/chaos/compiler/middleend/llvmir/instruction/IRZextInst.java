@@ -15,7 +15,7 @@ public class IRZextInst extends IRBaseInst {
         return this.getOperand(0);
     }
 
-    public String format() {
+    public String print() {
         // %zext = zext i8 %a to i32;
         return this.identifier() + " = zext " + this.fromValue().typedIdentifier() + " to " + this.type;
     }

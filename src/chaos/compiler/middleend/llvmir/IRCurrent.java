@@ -18,11 +18,6 @@ public class IRCurrent {
     private final Stack<IRBlock> continueBlockStack = new Stack<>();
     private final Stack<IRBlock> breakBlockStack = new Stack<>();
 
-    public void terminateAllBlock() {
-        for (IRBlock block : this.function.blockList)
-            if (!block.isTerminated) new IRBrInst(this.function.exitBlock, block);
-    }
-
     public void setLoopTarget(IRBlock continueTargetBlock, IRBlock breakTargetBlock) {
         continueBlockStack.push(continueTargetBlock);
         breakBlockStack.push(breakTargetBlock);

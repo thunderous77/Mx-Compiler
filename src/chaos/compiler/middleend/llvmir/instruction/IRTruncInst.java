@@ -15,7 +15,7 @@ public class IRTruncInst extends IRBaseInst {
         return this.getOperand(0);
     }
 
-    public String format() {
+    public String print() {
         // %trunc = trunc i8 %a to i32;
         return this.identifier() + " = trunc " + this.fromValue().typedIdentifier() + " to " + this.type;
     }
