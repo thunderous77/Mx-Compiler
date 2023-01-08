@@ -18,8 +18,8 @@ public abstract class AsmBaseInst {
         if (parentBlock != null) parentBlock.addInst(this);
     }
 
-    public abstract AsmBaseInst copy();
+    public abstract String format();
 
-    public abstract String toString();
+    public abstract void accept(AsmInstVisitor visitor);
 
 }

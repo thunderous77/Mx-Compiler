@@ -21,7 +21,7 @@ import java.io.PrintStream;
 public class Compiler {
     public static void main(String[] args) throws Exception {
         try {
-//            FileInputStream input = new FileInputStream("D:\\Sam\\program\\Mx-Compiler\\testcases\\codegen\\t8.mx");
+//            FileInputStream input = new FileInputStream("D:\\Sam\\program\\Mx-Compiler\\testcases\\codegen\\t70.mx");
 //            PrintStream output = new PrintStream("D:\\Sam\\program\\Masterball\\judge\\testcases\\codegen\\my_llvm_out.ll");
             InputStream input = System.in;
             PrintStream output  = System.out;
