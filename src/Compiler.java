@@ -12,6 +12,7 @@ import chaos.compiler.middleend.llvmir.IRBuilder;
 import chaos.compiler.middleend.llvmir.IRPrinter;
 import chaos.compiler.middleend.llvmir.hierarchy.IRModule;
 import chaos.compiler.middleend.llvmir.optimization.MiddleEndOptimizer;
+import chaos.utility.BuiltinFunctionASMPrinter;
 import chaos.utility.Error;
 import chaos.utility.MxErrorListener;
 import org.antlr.v4.runtime.CharStreams;
@@ -70,6 +71,9 @@ public class Compiler {
 
             // Stack Allocate
             new StackAllocator().runOnModule(asmModule);
+
+            // builtin function ASM Print
+            new BuiltinFunctionASMPrinter("builtin.s");
 
             // ASM Print
             AsmPrinter asmPrinter = new AsmPrinter(output);
