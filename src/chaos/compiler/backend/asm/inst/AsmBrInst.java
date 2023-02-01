@@ -20,9 +20,4 @@ public class AsmBrInst extends AsmBaseInst{
         return String.format("%s\t%s, %s, %s", "b" + op, rs1, rs2, target);
     }
 
-    @Override
-    public void accept(AsmInstVisitor visitor) {
-        visitor.visit(this);
-    }
-
 }

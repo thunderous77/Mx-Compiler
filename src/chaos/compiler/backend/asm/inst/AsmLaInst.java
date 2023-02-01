@@ -18,9 +18,4 @@ public class AsmLaInst extends AsmBaseInst{
         return String.format("%s\t%s,%s", "la", rd, symbol);
     }
 
-    @Override
-    public void accept(AsmInstVisitor visitor) {
-        visitor.visit(this);
-    }
-
 }

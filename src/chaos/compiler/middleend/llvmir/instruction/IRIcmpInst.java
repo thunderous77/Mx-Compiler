@@ -23,6 +23,8 @@ public class IRIcmpInst extends IRBaseInst {
         return this.getOperand(1);
     }
 
+    public boolean forBr() {return this.useList.size() == 1 && this.useList.get(0).user instanceof IRBrInst;}
+
     @Override
     public String print() {
         // %icmp = icmp slt i32 %i_value, 4

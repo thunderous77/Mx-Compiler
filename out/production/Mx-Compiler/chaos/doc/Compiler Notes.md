@@ -62,9 +62,9 @@
 
 #### 语法分析树
 
-* 对于语法分析树中的每一个非叶节点(rule)，都会生成一个单独的RuleNode的子类
+* 对于语法分析树中的每一个非叶结点(rule)，都会生成一个单独的RuleNode的子类
 
-* 对于语法分析树中的每一个叶节点(token)，都会生成一个TerminalNode类
+* 对于语法分析树中的每一个叶结点(token)，都会生成一个TerminalNode类
 
 * RuleNode和TerminalNode都是ParseTree的子类
 
@@ -74,18 +74,18 @@
 
 #### Listener
 
-* antlr为每个语法文件生成一个ParseTreeListener的子类，该类中，每一个非叶节点(rule)都有一个单独的enter方法和exit方法
+* antlr为每个语法文件生成一个ParseTreeListener的子类，该类中，每一个非叶结点(rule)都有一个单独的enter方法和exit方法
 * <img src="C:\Users\27595\AppData\Roaming\Typora\typora-user-images\image-20221030210538623.png" style="zoom:30%">
 
 #### Visitor
 
-* 每一个非叶节点(rule)都有一个单独的visitXXX方法
+* 每一个非叶结点(rule)都有一个单独的visitXXX方法
 
   ~~~java
   @Override public T visitMxProgram(MxParser.MxProgramContext ctx) { return visitChildren(ctx); }
   ~~~
 
-  > 特别的，叶节点(token)也有一个visit方法，名为visitTerminal()
+  > 特别的，叶结点(token)也有一个visit方法，名为visitTerminal()
 
   > antlr运行库提供MyVisitor类，通过调用visit()方法开始对语法分析树进行一次DFS
 
@@ -101,19 +101,19 @@
 
   > 删除无用的信息（分号，括号等）
 
-  > 简单处理节点信息（判断是否可以作为左值）
+  > 简单处理结点信息（判断是否可以作为左值）
   
-  > 删去CST中多余的节点，并且将语法树转换成自己熟悉的语法结构
+  > 删去CST中多余的结点，并且将语法树转换成自己熟悉的语法结构
 
 * ASTBuilder.java
 
   > 从XXXBasevisitor派生出ASTBuilder，让返回类型为BaseNode
 
-  > 重写visitor中所有的visitXXX函数，使得visitor调用visit()函数时自动dfs遍历时可以返回XXXNode类型，得到一棵AST自身Node的树(即最后返回的RootNode节点)，这个RootNode节点就是AST的语法分析树
+  > 重写visitor中所有的visitXXX函数，使得visitor调用visit()函数时自动dfs遍历时可以返回XXXNode类型，得到一棵AST自身Node的树(即最后返回的RootNode结点)，这个RootNode结点就是AST的语法分析树
 
-  > AST的各个Node中存着孩子节点的关系和一些其他有用信息
+  > AST的各个Node中存着孩子结点的关系和一些其他有用信息
 
-  > 这棵树上的所有节点可以通过visit函数让visitor来访问自己，从而实现SematicChecker
+  > 这棵树上的所有结点可以通过visit函数让visitor来访问自己，从而实现SematicChecker
   
 
 ## Codegen
@@ -211,7 +211,7 @@
 
   * `RootNode`
 
-    * 直接子节点中的 VarDefNode 一定是全局变量，开一个 bool `isGloabalVar`，开的时候访问 VarDefNode 时声明全局变量，扫完关掉
+    * 直接子结点中的 VarDefNode 一定是全局变量，开一个 bool `isGloabalVar`，开的时候访问 VarDefNode 时声明全局变量，扫完关掉
 
     * 开一个 `globalVarInit` 的 IRFunction，其中存储全局变量的赋值和 new 语句，在 main 函数一开始调用它
 
@@ -248,3 +248,156 @@
   * `FuncDeclare`
   
     类的成员函数第一个参数额外输入 `this` 指针，指向类（的 type）
+
+## Backend
+
+### [**准备工作**](https://blog.csdn.net/qq_29674357/article/details/79069013)
+
+* 消除 phi 指令
+
+  由于底层没有 phi 指令对应的指令，需要消除 phi 指令
+
+  ```c++
+  B1:						B2:
+      ...                     ...
+  	x1 = a + b;             x2 = a - b;
+  	...                     ...
+  	
+  B0:
+      ...
+  	x3 = PHI(x1, x2)
+  	...
+  ```
+
+  修改为如下代码即可消除 phi 指令：
+
+  ```c++
+  B1:						B2:
+      ...                     ...
+  	x1 = a + b;             x2 = a - b;
+  	x0 = x1; (COPY)         x0 = x2; (COPY)
+  	...                     ...
+  	
+  B0:
+      ...
+  	x3 = x0;
+  	...
+  ```
+
+* 二地址转换
+
+  LLVM 中指令多是三地址的，而底层指令至多只有两个地址，因此需要进行二地址转换
+
+  ```
+  三地址指令:
+    %a = ADD %b %c
+  变为:
+    %a = MOVE %b
+    %a = ADD %a %c
+  ```
+
+
+
+### 寄存器分配（图染色）
+
+**图染色方法（NP-Complete）**
+
+**Reference：《现代编译原理-c语言描述》（虎书）**
+
+#### [**构造（Build）**](https://zhuanlan.zhihu.com/p/55287942)
+
+* 结点活跃期（Live Range）
+
+  从变量第一次被定义（赋值）开始，到它下一次被赋值前的最后一次被使用为止
+
+  两个结点之间的边表示这两个变量活跃期因为生命期（lifetime）重叠导致互相冲突或干涉
+
+* 活跃分析（Liveness Analyzer）
+
+  将程序分成许多block，之间由有向线段连接，代表程序的运行过程，之后对每个block做活跃分析
+
+  对于每个结点（block），我们作如下规定：
+
+  * use：结点中被使用的变量（即虚拟寄存器）
+  * def：结点中被赋值的变量
+  * in：输入结点的变量
+  * out：结点输出的变量
+
+  由数据流方程我们得到如下公式：
+  $$
+  in[n]=use[n] \cup (out[n] - def[n])
+  $$
+  以及
+  $$
+  out[n] = \bigcup_{s \in succ[n]} in[s]
+  $$
+  边界条件为
+  $$
+  in[exit] = \{\}
+  $$
+  代码如下：
+
+  ```c++
+  L1:
+    a = b + c;
+    d -= a;
+    e = d + f;
+    if (e > 0) f = 2*e;
+    else {
+      b = d + e;
+      e = e – 1;
+    } 
+    b = f + c;
+    goto L1
+  ```
+
+  控制流图如下：
+
+  ![img](https://pic2.zhimg.com/80/v2-a337f55761e3d3bde27f253f57409bb5_720w.webp)
+
+  活跃分析过程如下：（图中命名kill：def，gen：use）
+
+  ![img](https://pic2.zhimg.com/80/v2-1768183217ed6a96783c95cab002cf65_720w.webp)
+
+  活跃分析结果如下：
+
+  ![img](https://pic1.zhimg.com/80/v2-aae2502cb436462da885f36f841c95a4_720w.webp)
+
+* 寄存器干涉图（RIG，Register Interference Graph）
+
+  寄存器干涉图是一种无向图，用于显示在特定程序点哪些变量是活跃的，哪些寄存器在分配时会互相冲突。
+
+  如果在程序点P存在两个变量a和b同时活跃，那么就称变量a和b在程序点P互相干涉。这时，变量a和b应分配不同寄存器。换言之，如果在寄存器干涉图上，两个结点之间没有边相连，则可以分配到同一寄存器。
+
+  构造步骤如下：
+
+  - 为每个变量添加一个结点
+  -  检查变量之间的干涉。如果存在干涉，增加一条边
+
+  构造上述代码寄存器干涉图如下：
+
+  ![img](https://pic2.zhimg.com/80/v2-d391ab5735c6988c357fa4e8478925f9_720w.webp)
+
+  最后得到图染色结果如下：
+
+  ![img](https://pic3.zhimg.com/80/v2-0027faa86a516ef08e3a06e8eff4c15a_720w.webp)
+
+#### **简化（Simplify）**
+
+简化图，删除度数（邻结点数）小于 K 的结点，K 为物理寄存器的数量。
+
+原因是：假设图 G 有一个度数小于 K 的结点 m，那么如果图 G - {m} 可以用 K 色染色，那么图 G 也可以，这是因为在之前的染色中， m 的邻结点至多用了 K - 1 种颜色，于是找出一种颜色作为 m 的颜色
+
+#### 溢出（Spill）
+
+
+
+#### 合并（Coalesce）
+
+之前准备工作中生成了大量的 MOVE 指令，如果指令的源结点与目标结点之间不存在边，那么可以合并这两个结点
+
+但是注意：并不是所有符合条件的结点最后都要合并，因为有可能合并之后图从可染色变成了不可染色
+
+## Optimization
+
+* 

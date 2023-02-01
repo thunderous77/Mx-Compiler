@@ -2,32 +2,26 @@ package chaos.compiler.backend.asm.hierarchy;
 
 import chaos.compiler.backend.asm.inst.AsmBaseInst;
 import chaos.compiler.backend.asm.operand.AsmBaseOperand;
+import chaos.compiler.backend.asm.operand.AsmRegister;
+import chaos.compiler.middleend.llvmir.hierarchy.Loop;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 public class AsmBlock extends AsmBaseOperand{
-    public String label = null;
-    public ArrayList<AsmBaseInst> instList = new ArrayList<>();
 
-    public AsmBlock() {
+    public ArrayList<AsmBaseInst> instList = new ArrayList<>();
+    public ArrayList<AsmBlock> preBlockList = new ArrayList<>(), nextBlockList = new ArrayList<>();
+    public HashSet<AsmRegister> in = new HashSet<>(), out = new HashSet<>();
+    public int loopDepth = 0;
+
+    public AsmBlock(String label) {
+        super(label);
     }
 
     public void addInst(AsmBaseInst inst) {
         instList.add(inst);
-    }
-
-    public void addInstAtHead(AsmBaseInst inst) {
-        instList.add(0, inst);
-    }
-
-    public void addInstAtEnd(AsmBaseInst inst) {
-        instList.add(instList.size() - 1, inst);
-    }
-
-    @Override
-    public String toString() {
-        return label;
     }
 
 }

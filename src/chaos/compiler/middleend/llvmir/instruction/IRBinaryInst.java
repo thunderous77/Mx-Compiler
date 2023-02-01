@@ -21,23 +21,23 @@ public class IRBinaryInst extends IRBaseInst {
         this.addOperand(rValue);
     }
 
-    public IRValue leftValue() {
+    public IRValue lValue() {
         return this.getOperand(0);
     }
 
-    public IRValue rightValue() {
+    public IRValue rValue() {
         return this.getOperand(1);
     }
 
     @Override
     public String print() {
         // %add = add i32 %A, %B
-        return this.identifier() + " = " + this.op + " " + this.type + " " + this.leftValue().identifier() + ", " + this.rightValue().identifier();
+        return this.identifier() + " = " + this.op + " " + this.type + " " + this.lValue().identifier() + ", " + this.rValue().identifier();
     }
 
     @Override
     public IRBaseInst copy() {
-        return new IRBinaryInst(op, type, leftValue(), rightValue(), null);
+        return new IRBinaryInst(op, type, lValue(), rValue(), null);
     }
 
     @Override

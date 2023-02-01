@@ -16,12 +16,7 @@ public class AsmLoadInst extends AsmBaseInst {
 
     @Override
     public String format() {
-        return String.format("%s\t%s, %s(%s)", "l" + AsmTranslator.widthTranslate(width), rd, imm, rs1);
-    }
-
-    @Override
-    public void accept(AsmInstVisitor visitor) {
-        visitor.visit(this);
+        return String.format("%s\t%s, %s(%s)", "l" + AsmTranslator.translateWidth(width), rd, imm, rs1);
     }
 
 }

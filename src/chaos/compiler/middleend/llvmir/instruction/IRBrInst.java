@@ -48,6 +48,10 @@ public class IRBrInst extends IRBaseInst {
         this.resetOperand(2, newBlock);
     }
 
+    public boolean isJump() {
+        return this.getOperandSize() == 1;
+    }
+
     @Override
     public boolean isValueSelf() {
         return false;

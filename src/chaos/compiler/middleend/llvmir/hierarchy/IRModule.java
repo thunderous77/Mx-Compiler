@@ -3,7 +3,7 @@ package chaos.compiler.middleend.llvmir.hierarchy;
 import chaos.compiler.frontend.ast.node.expr.BinaryExprNode;
 import chaos.compiler.middleend.llvmir.IRTranslator;
 import chaos.compiler.middleend.llvmir.IRStruct;
-import chaos.compiler.middleend.llvmir.constant.StrConstant;
+import chaos.compiler.middleend.llvmir.constant.IRStrConstant;
 import chaos.compiler.middleend.llvmir.type.*;
 import chaos.utility.Error;
 
@@ -18,7 +18,7 @@ public class IRModule {
     public ArrayList<IRFunction> builtinFuncList = new ArrayList<>();
     public ArrayList<IRStruct> classList = new ArrayList<>();
     public ArrayList<IRGlobalVariable> globalVarList = new ArrayList<>();
-    public ArrayList<StrConstant> strConstList = new ArrayList<>();
+    public ArrayList<IRStrConstant> strConstList = new ArrayList<>();
 
     public void setBottomFunction() {
         // malloc : i32 -> i8_ptr
@@ -48,13 +48,13 @@ public class IRModule {
         throw new Error("<codegen error> cannot find builtin function \"" + name + "\"");
     }
 
-    public StrConstant getStrConstant(String data) {
-        for (StrConstant strConst : strConstList) {
+    public IRStrConstant getStrConstant(String data) {
+        for (IRStrConstant strConst : strConstList) {
             if (Objects.equals(strConst.constData, data))
                 return strConst;
         }
         // generate a new string constant
-        StrConstant newStrConst = new StrConstant(data);
+        IRStrConstant newStrConst = new IRStrConstant(data);
         strConstList.add(newStrConst);
         return newStrConst;
     }

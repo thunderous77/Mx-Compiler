@@ -15,9 +15,4 @@ public class AsmMvInst extends AsmBaseInst{
         return String.format("%s\t%s, %s", "mv", rd, rs1);
     }
 
-    @Override
-    public void accept(AsmInstVisitor visitor) {
-        visitor.visit(this);
-    }
-
 }

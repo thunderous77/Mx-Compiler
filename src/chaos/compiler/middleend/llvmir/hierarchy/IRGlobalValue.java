@@ -5,6 +5,8 @@ import chaos.compiler.middleend.llvmir.type.IRBaseType;
 
 public class IRGlobalValue extends IRBaseConstant {
 
+    public boolean gpRegMark = false;
+
     public IRGlobalValue(String name, IRBaseType type) {
         super(name, type);
     }

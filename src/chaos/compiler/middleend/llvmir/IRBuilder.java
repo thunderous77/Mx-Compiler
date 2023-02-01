@@ -35,6 +35,9 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(RootNode node) {
+        // add global variable function at head
+        module.funcList.add(globalVarInitFunc);
+
         commander.push(node.scope);
         translator.setGlobalScope(node.scope);
 
@@ -49,15 +52,16 @@ public class IRBuilder implements ASTVisitor {
             if (sonNode instanceof FuncDefNode) funcDeclare((FuncDefNode) sonNode);
 
         // global variable
-        module.funcList.add(globalVarInitFunc);
         current.function = globalVarInitFunc;
         current.block = globalVarInitFunc.entryBlock;
-        for (BaseNode sonNode : node.sonNodes)
+        for (BaseNode sonNode : node.sonNodes) {
             if (sonNode instanceof VarDefStmtNode) sonNode.accept(this);
+        }
         isGlobalVar = false;
         new IRBrInst(globalVarInitFunc.exitBlock, current.block);
         current.block = globalVarInitFunc.exitBlock;
         new IRRetInst(globalVarInitFunc.exitBlock);
+
 
         // common nodes
         for (BaseNode sonNode : node.sonNodes)
@@ -363,7 +367,7 @@ public class IRBuilder implements ASTVisitor {
         ArrayList<IRValue> argValueList = new ArrayList<>();
 
         // array.size() -> skip
-        if (!(node.funcCallNode.value.type instanceof IRFunctionType)){
+        if (!(node.funcCallNode.value.type instanceof IRFunctionType)) {
             node.value = node.funcCallNode.value;
             return;
         }

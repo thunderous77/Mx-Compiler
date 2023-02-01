@@ -1,6 +1,6 @@
 package chaos.compiler.middleend.llvmir;
 
-import chaos.compiler.middleend.llvmir.constant.StrConstant;
+import chaos.compiler.middleend.llvmir.constant.IRStrConstant;
 import chaos.compiler.middleend.llvmir.hierarchy.*;
 import chaos.compiler.middleend.llvmir.instruction.IRBaseInst;
 import chaos.compiler.middleend.llvmir.type.IRFunctionType;
@@ -57,8 +57,8 @@ public class IRPrinter {
             printStream.println(globalVarInitPrint(globalVariable));
         if (module.globalVarList.size() > 0) printStream.println('\n');
 
-        for (StrConstant strConstant : module.strConstList)
-            printStream.println(strConstantInitPrint(strConstant));
+        for (IRStrConstant IRStrConstant : module.strConstList)
+            printStream.println(strConstantInitPrint(IRStrConstant));
         if (module.strConstList.size() > 0) printStream.print('\n');
 
         for (IRStruct struct : module.classList) printStream.println(classInitPrint(struct));
@@ -68,8 +68,8 @@ public class IRPrinter {
     }
 
     // @.str.1 = private unnamed_addr constant [4 x i8] c"<< \00", align 1
-    public static String strConstantInitPrint(StrConstant strConstant) {
-        return strConstant.identifier() + " = private unnamed_addr constant " + ((IRPointerType) strConstant.type).pointedType + " c" + strConstant.constDataPrint() + ", align " + ((IRPointerType) strConstant.type).pointedType.size();
+    public static String strConstantInitPrint(IRStrConstant IRStrConstant) {
+        return IRStrConstant.identifier() + " = private unnamed_addr constant " + ((IRPointerType) IRStrConstant.type).pointedType + " c" + IRStrConstant.constDataPrint() + ", align " + ((IRPointerType) IRStrConstant.type).pointedType.size();
     }
 
     // @n = global i32 0, align 4

@@ -15,9 +15,4 @@ public class AsmLuiInst extends AsmBaseInst{
         return String.format("%s\t%s, %s", "lui", rd, imm);
     }
 
-    @Override
-    public void accept(AsmInstVisitor visitor) {
-        visitor.visit(this);
-    }
-
 }

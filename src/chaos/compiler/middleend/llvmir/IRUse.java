@@ -5,7 +5,7 @@ public class IRUse {
     public IRUser user;
     public IRValue value;
 
-    private IRUse(IRUser user, IRValue value) {
+    public IRUse(IRUser user, IRValue value) {
         this.user = user;
         this.value = value;
     }

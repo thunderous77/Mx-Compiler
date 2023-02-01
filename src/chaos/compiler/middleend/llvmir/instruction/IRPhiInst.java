@@ -13,6 +13,11 @@ public class IRPhiInst extends IRBaseInst {
         if (operands.length % 2 != 0) throw new Error("[IR Error] Invalid Phi instruction operands number");
     }
 
+    public void addBranch(IRValue branchData, IRBlock preBlock) {
+        this.addOperand(branchData);
+        this.addOperand(preBlock);
+    }
+
     @Override
     public String print() {
         // %indvar = phi i32 [ 0, %LoopHeader ], [ %nextindvar, %Loop ]

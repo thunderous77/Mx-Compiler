@@ -7,16 +7,14 @@ import chaos.compiler.middleend.llvmir.type.IRBaseType;
 public abstract class IRBaseInst extends IRUser {
 
     public IRBlock parentBlock;
-    public String instName;
-
     public IRBaseInst(String name, IRBaseType type, IRBlock parentBlock) {
         super(name,type);
         setParentBlock(parentBlock);
     }
 
-    public IRBaseInst(String name, IRBaseType type, IRBlock parentBlock, boolean insertAtHead) {
+    public IRBaseInst(String name, IRBaseType type, IRBlock parentBlock, boolean insertAtLast) {
         super(name,type);
-        setParentBlockAtHead(parentBlock);
+        setParentBlockAtLast(parentBlock);
     }
 
     public void setParentBlock(IRBlock parentBlock) {
@@ -24,12 +22,13 @@ public abstract class IRBaseInst extends IRUser {
         if (parentBlock != null) parentBlock.addInst(this);
     }
 
-    public void setParentBlockAtHead(IRBlock parentBlock) {
-        if (parentBlock != null) parentBlock.addInstAtFirst(this);
+    public void setParentBlockAtLast(IRBlock parentBlock) {
+        if (parentBlock != null) parentBlock.addInstAtLast(this);
     }
 
-    public abstract String print();
+    public boolean mayHaveSideEffects() {return false;}
 
+    public abstract String print();
 
     public boolean isValueSelf() {return true;}
 

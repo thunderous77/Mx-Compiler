@@ -16,9 +16,4 @@ public class AsmJmpInst extends AsmBaseInst{
         return String.format("%s\t%s", "j", target);
     }
 
-    @Override
-    public void accept(AsmInstVisitor visitor) {
-        visitor.visit(this);
-    }
-
 }

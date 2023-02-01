@@ -4,6 +4,8 @@ import chaos.compiler.backend.asm.hierarchy.AsmBlock;
 import chaos.compiler.backend.asm.operand.AsmImmediate;
 import chaos.compiler.backend.asm.operand.AsmRegister;
 
+import java.util.HashSet;
+
 
 public abstract class AsmBaseInst {
 
@@ -18,8 +20,30 @@ public abstract class AsmBaseInst {
         if (parentBlock != null) parentBlock.addInst(this);
     }
 
-    public abstract String format();
+    public void replaceUse(AsmRegister oldUse, AsmRegister newUse) {
+        if (rs1 == oldUse) rs1 = newUse;
+        if (rs2 == oldUse) rs2 = newUse;
+    }
 
-    public abstract void accept(AsmInstVisitor visitor);
+    public void replaceDef(AsmRegister oldDef, AsmRegister newDef) {
+        if (rd == oldDef) {
+            rd = newDef;
+        }
+    }
+
+    public HashSet<AsmRegister> uses() {
+        HashSet<AsmRegister> ret = new HashSet<>();
+        if (rs1 != null) ret.add(rs1);
+        if (rs2 != null) ret.add(rs2);
+        return ret;
+    }
+
+    public HashSet<AsmRegister> defs() {
+        HashSet<AsmRegister> ret = new HashSet<>();
+        if (rd != null) ret.add(rd);
+        return ret;
+    }
+
+    public abstract String format();
 
 }

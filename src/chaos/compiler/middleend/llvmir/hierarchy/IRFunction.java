@@ -5,6 +5,7 @@ import chaos.compiler.middleend.llvmir.type.IRBaseType;
 import chaos.compiler.middleend.llvmir.type.IRFunctionType;
 import chaos.compiler.middleend.llvmir.type.IRVoidType;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 
 public class IRFunction extends IRGlobalValue {
@@ -13,6 +14,8 @@ public class IRFunction extends IRGlobalValue {
     public IRBlock entryBlock, exitBlock;
     public IRValue retValuePtr;
     public LinkedList<IRBlock> blockList = new LinkedList<>();
+
+    public HashSet<Loop> topLevelLoops = new HashSet<>();
 
     public IRFunction(String name, IRBaseType functionType, IRModule parentModule) {
         super(name, functionType);

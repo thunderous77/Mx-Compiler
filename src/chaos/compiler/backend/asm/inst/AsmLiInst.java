@@ -15,9 +15,4 @@ public class AsmLiInst extends AsmBaseInst{
         return String.format("%s\t%s, %s", "li", rd, imm);
     }
 
-    @Override
-    public void accept(AsmInstVisitor visitor) {
-        visitor.visit(this);
-    }
-
 }

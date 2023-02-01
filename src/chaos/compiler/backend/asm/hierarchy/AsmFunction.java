@@ -9,24 +9,14 @@ import java.util.ArrayList;
 
 public class AsmFunction extends AsmBaseOperand{
 
-    public String name = null;
-    public int spOffset = 0;
-
     public final ArrayList<AsmBlock> blockList = new ArrayList<>();
     public final ArrayList<AsmRegister> argsList = new ArrayList<>();
     public AsmBlock entryBlock, exitBlock;
 
-    public AsmVirtualReg ra = null;
-    public ArrayList<AsmVirtualReg> virRegList = new ArrayList<>();
-    public ArrayList<AsmImmediate> offsetImmList = new ArrayList<>();
+    public int callerArgStackUse = 0, allocaStackUse = 0, spillStackUse = 0, calleeArgStackUse = 0, totalStackUse = 0;
 
-    public AsmFunction(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return name;
+    public AsmFunction(String identifier) {
+        super(identifier);
     }
 
 }

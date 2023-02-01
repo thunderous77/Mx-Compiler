@@ -27,6 +27,9 @@ public class IRAllocaInst extends IRBaseInst {
     }
 
     @Override
+    public boolean mayHaveSideEffects() {return true;}
+
+    @Override
     public void accept(IRInstVisitor visitor) {
         visitor.visit(this);
     }

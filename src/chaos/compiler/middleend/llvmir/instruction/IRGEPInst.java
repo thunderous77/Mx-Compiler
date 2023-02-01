@@ -4,6 +4,7 @@ import chaos.compiler.middleend.llvmir.IRValue;
 import chaos.compiler.middleend.llvmir.hierarchy.IRBlock;
 import chaos.compiler.middleend.llvmir.type.IRBaseType;
 import chaos.compiler.middleend.llvmir.type.IRPointerType;
+import chaos.compiler.middleend.llvmir.type.IRStructType;
 
 public class IRGEPInst extends IRBaseInst {
 
@@ -35,6 +36,10 @@ public class IRGEPInst extends IRBaseInst {
 
     public IRValue headPointer() {
         return this.getOperand(0);
+    }
+
+    public boolean isGetMember() {
+        return ((IRPointerType) headPointer().type).pointedType instanceof IRStructType && indexNum() == 2;
     }
 
     public IRValue ptrMoveIndex() {
