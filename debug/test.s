@@ -1,162 +1,3 @@
-declare i8* @_bottom_malloc(i32)
-declare i8* @_bottom_str_cat(i8*, i8*)
-declare i1 @_bottom_str_eq(i8*, i8*)
-declare i1 @_bottom_str_ne(i8*, i8*)
-declare i1 @_bottom_str_slt(i8*, i8*)
-declare i1 @_bottom_str_sle(i8*, i8*)
-declare i1 @_bottom_str_sgt(i8*, i8*)
-declare i1 @_bottom_str_sge(i8*, i8*)
-declare void @print(i8*)
-declare void @println(i8*)
-declare void @printInt(i32)
-declare void @printlnInt(i32)
-declare i8* @getString()
-declare i32 @getInt()
-declare i8* @toString(i32)
-declare i32 @_str_length(i8*)
-declare i8* @_str_substring(i8*, i32, i32)
-declare i32 @_str_parseInt(i8*)
-declare i32 @_str_ord(i8*, i32)
-
-@n = global i32 zeroinitializer, align 4
-@p = global i32 zeroinitializer, align 4
-@k = global i32 zeroinitializer, align 4
-@i = global i32 zeroinitializer, align 4
-
-
-@.strconst = private unnamed_addr constant [4 x i8] c"<< \00", align 1
-@.strconst.1 = private unnamed_addr constant [2 x i8] c" \00", align 1
-@.strconst.2 = private unnamed_addr constant [2 x i8] c"(\00", align 1
-@.strconst.3 = private unnamed_addr constant [3 x i8] c") \00", align 1
-@.strconst.4 = private unnamed_addr constant [4 x i8] c">> \00", align 1
-
-define void @global_var_init() {
-entry:
-  br label %exit
-
-exit:
-  ret void
-}
-
-define i32 @main() {
-entry.12:
-  call void @global_var_init()
-  %getInt.call = call i32 @getInt()
-  store i32 %getInt.call, i32* @n, align 4
-  %getInt.call.1 = call i32 @getInt()
-  store i32 %getInt.call.1, i32* @p, align 4
-  %getInt.call.2 = call i32 @getInt()
-  store i32 %getInt.call.2, i32* @k, align 4
-  %p.load = load i32, i32* @p, align 4
-  %k.load = load i32, i32* @k, align 4
-  %sub = sub i32 %p.load, %k.load
-  %icmp = icmp sgt i32 %sub, 1
-  br i1 %icmp, label %if.true, label %if.false
-
-exit.12:
-  ret i32 0
-
-if.true:
-  %getelementptr = getelementptr inbounds [4 x i8], [4 x i8]* @.strconst, i32 0, i32 0
-  call void @print(i8* %getelementptr)
-  br label %if.exit
-
-if.exit:
-  %p.load.1 = load i32, i32* @p, align 4
-  %k.load.1 = load i32, i32* @k, align 4
-  %sub.1 = sub i32 %p.load.1, %k.load.1
-  store i32 %sub.1, i32* @i, align 4
-  br label %for.cond
-
-if.false:
-  br label %if.exit
-
-for.cond:
-  %i.load = load i32, i32* @i, align 4
-  %p.load.2 = load i32, i32* @p, align 4
-  %k.load.2 = load i32, i32* @k, align 4
-  %add = add i32 %p.load.2, %k.load.2
-  %icmp.1 = icmp sle i32 %i.load, %add
-  br i1 %icmp.1, label %for.body, label %for.exit
-
-for.incr:
-  %i.load.1 = load i32, i32* @i, align 4
-  %add.1 = add i32 %i.load.1, 1
-  store i32 %add.1, i32* @i, align 4
-  br label %for.cond
-
-for.body:
-  %i.load.2 = load i32, i32* @i, align 4
-  %icmp.2 = icmp sle i32 1, %i.load.2
-  move %phi, %icmp.2
-  br i1 %icmp.2, label %logic_and_continue, label %logic_and_exit
-
-for.exit:
-  %p.load.4 = load i32, i32* @p, align 4
-  %k.load.3 = load i32, i32* @k, align 4
-  %add.2 = add i32 %p.load.4, %k.load.3
-  %n.load.1 = load i32, i32* @n, align 4
-  %icmp.5 = icmp slt i32 %add.2, %n.load.1
-  br i1 %icmp.5, label %if.true.3, label %if.false.3
-
-if.true.1:
-  %i.load.4 = load i32, i32* @i, align 4
-  %p.load.3 = load i32, i32* @p, align 4
-  %icmp.4 = icmp eq i32 %i.load.4, %p.load.3
-  br i1 %icmp.4, label %if.true.2, label %if.false.2
-
-if.exit.1:
-  br label %for.incr
-
-if.false.1:
-  br label %if.exit.1
-
-logic_and_continue:
-  %i.load.3 = load i32, i32* @i, align 4
-  %n.load = load i32, i32* @n, align 4
-  %icmp.3 = icmp sle i32 %i.load.3, %n.load
-  move %phi, %icmp.3
-  br label %logic_and_exit
-
-logic_and_exit:
-  %phi = phi i1 [%icmp.2, %for.body], [%icmp.3, %logic_and_continue]
-  br i1 %phi, label %if.true.1, label %if.false.1
-
-if.true.2:
-  %getelementptr.2 = getelementptr inbounds [2 x i8], [2 x i8]* @.strconst.2, i32 0, i32 0
-  call void @print(i8* %getelementptr.2)
-  %i.load.6 = load i32, i32* @i, align 4
-  %toString.call = call i8* @toString(i32 %i.load.6)
-  call void @print(i8* %toString.call)
-  %getelementptr.3 = getelementptr inbounds [3 x i8], [3 x i8]* @.strconst.3, i32 0, i32 0
-  call void @print(i8* %getelementptr.3)
-  br label %if.exit.2
-
-if.exit.2:
-  br label %if.exit.1
-
-if.false.2:
-  %i.load.5 = load i32, i32* @i, align 4
-  call void @printInt(i32 %i.load.5)
-  %getelementptr.1 = getelementptr inbounds [2 x i8], [2 x i8]* @.strconst.1, i32 0, i32 0
-  call void @print(i8* %getelementptr.1)
-  br label %if.exit.2
-
-if.true.3:
-  %getelementptr.4 = getelementptr inbounds [4 x i8], [4 x i8]* @.strconst.4, i32 0, i32 0
-  call void @print(i8* %getelementptr.4)
-  br label %if.exit.3
-
-if.exit.3:
-  br label %exit.12
-
-if.false.3:
-  br label %if.exit.3
-
-mid:
-  br label %logic_and_exit
-}
-
 	.text
 	.globl	global_var_init
 	.p2align	1
@@ -164,278 +5,7252 @@ mid:
 global_var_init:
 entry:
 	addi	sp, sp, 0
-	mv	v27, s0
-	mv	v28, s1
-	mv	v29, s2
-	mv	v30, s3
-	mv	v31, s4
-	mv	v32, s5
-	mv	v33, s6
-	mv	v34, s7
-	mv	v35, s8
-	mv	v36, s9
-	mv	v37, s10
-	mv	v38, s11
-	mv	v39, ra
+	mv	s0, s0
+	mv	s1, s1
+	mv	s2, s2
+	mv	s3, s3
+	mv	s4, s4
+	mv	s5, s5
+	mv	s6, s6
+	mv	s7, s7
+	mv	s8, s8
+	mv	s9, s9
+	mv	s10, s10
+	mv	s11, s11
+	mv	ra, ra
+	lui	t0, %hi(count)
+	sw	zero, %lo(count)(t0)
 	j	exit
-	addi	sp, sp, 0
 exit:
-	mv	s0, v27
-	mv	s1, v28
-	mv	s2, v29
-	mv	s3, v30
-	mv	s4, v31
-	mv	s5, v32
-	mv	s6, v33
-	mv	s7, v34
-	mv	s8, v35
-	mv	s9, v36
-	mv	s10, v37
-	mv	s11, v38
-	mv	ra, v39
+	mv	s0, s0
+	mv	s1, s1
+	mv	s2, s2
+	mv	s3, s3
+	mv	s4, s4
+	mv	s5, s5
+	mv	s6, s6
+	mv	s7, s7
+	mv	s8, s8
+	mv	s9, s9
+	mv	s10, s10
+	mv	s11, s11
+	mv	ra, ra
+	addi	sp, sp, 0
 	ret
 	.size	global_var_init, .-global_var_init
+                                        # -- End function
+	.globl	getcount
+	.p2align	1
+	.type	getcount,@function
+getcount:
+entry.12:
+	addi	sp, sp, 0
+	mv	s0, s0
+	mv	s1, s1
+	mv	s2, s2
+	mv	s3, s3
+	mv	s4, s4
+	mv	s5, s5
+	mv	s6, s6
+	mv	s7, s7
+	mv	s8, s8
+	mv	s9, s9
+	mv	s10, s10
+	mv	s11, s11
+	mv	ra, ra
+	mv	a0, a0
+	lw	t1, 0(a0)
+	li	t0, 1
+	add	t0, t1, t0
+	sw	t0, 0(a0)
+	j	exit.12
+exit.12:
+	mv	a0, t0
+	mv	s0, s0
+	mv	s1, s1
+	mv	s2, s2
+	mv	s3, s3
+	mv	s4, s4
+	mv	s5, s5
+	mv	s6, s6
+	mv	s7, s7
+	mv	s8, s8
+	mv	s9, s9
+	mv	s10, s10
+	mv	s11, s11
+	mv	ra, ra
+	addi	sp, sp, 0
+	ret
+	.size	getcount, .-getcount
                                         # -- End function
 	.globl	main
 	.p2align	1
 	.type	main,@function
 main:
-entry.12:
-	addi	sp, sp, -16
-	mv	v0, s0
-	mv	v1, s1
-	mv	v2, s2
-	mv	v3, s3
-	mv	v4, s4
-	mv	v5, s5
-	mv	v6, s6
-	mv	v7, s7
-	mv	v8, s8
-	mv	v9, s9
-	mv	v10, s10
-	mv	v11, s11
-	sw	ra, 0(sp)
+entry.13:
+	addi	sp, sp, -1040
+	sw	s0, 1020(sp)
+	sw	s1, 1016(sp)
+	sw	s2, 1012(sp)
+	sw	s3, 1008(sp)
+	sw	s4, 1004(sp)
+	sw	s5, 1000(sp)
+	sw	s6, 996(sp)
+	sw	s7, 992(sp)
+	sw	s8, 988(sp)
+	sw	s9, 984(sp)
+	sw	s10, 980(sp)
+	sw	s11, 976(sp)
+	sw	ra, 1024(sp)
 	call	global_var_init
-	mv	v13, a0
-	call	getInt
-	mv	v14, a0
-	lui	v15, %hi(n)
-	sw	v14, %lo(n)(v15)
-	call	getInt
-	mv	v16, a0
-	lui	v17, %hi(p)
-	sw	v16, %lo(p)(v17)
-	call	getInt
-	mv	v18, a0
-	lui	v19, %hi(k)
-	sw	v18, %lo(k)(v19)
-	lui	v21, %hi(p)
-	lw	v20, %lo(p)(v21)
-	lui	v23, %hi(k)
-	lw	v22, %lo(k)(v23)
-	sub	v24, v20, v22
-	li	v25, 1
-	blt	v25, v24, if.true
-	j	if.false
-	addi	sp, sp, 16
-exit.12:
-	li	a0, 0
-	mv	s0, v0
-	mv	s1, v1
-	mv	s2, v2
-	mv	s3, v3
-	mv	s4, v4
-	mv	s5, v5
-	mv	s6, v6
-	mv	s7, v7
-	mv	s8, v8
-	mv	s9, v9
-	mv	s10, v10
-	mv	s11, v11
-	lw	ra, 0(sp)
-	ret
-if.true:
-	la	v27,.strconst
-	mv	v26, v27
-	mv	a0, v26
-	call	print
-	mv	v28, a0
-	j	if.exit
-if.exit:
-	lui	v30, %hi(p)
-	lw	v29, %lo(p)(v30)
-	lui	v32, %hi(k)
-	lw	v31, %lo(k)(v32)
-	sub	v33, v29, v31
-	lui	v34, %hi(i)
-	sw	v33, %lo(i)(v34)
-	j	for.cond
-if.false:
-	j	if.exit
-for.cond:
-	lui	v36, %hi(i)
-	lw	v35, %lo(i)(v36)
-	lui	v38, %hi(p)
-	lw	v37, %lo(p)(v38)
-	lui	v40, %hi(k)
-	lw	v39, %lo(k)(v40)
-	add	v41, v37, v39
-	bge	v41, v35, for.body
-	j	for.exit
-for.incr:
-	lui	v43, %hi(i)
-	lw	v42, %lo(i)(v43)
-	li	v45, 1
-	add	v44, v42, v45
-	lui	v46, %hi(i)
-	sw	v44, %lo(i)(v46)
-	j	for.cond
-for.body:
-	lui	v48, %hi(i)
-	lw	v47, %lo(i)(v48)
-	li	v50, 1
-	slt	v49, v47, v50
-	xori	v49, v49, 1
-	mv	v51, v49
-	bne	v49, zero, logic_and_continue
-	j	logic_and_exit
-for.exit:
-	lui	v53, %hi(p)
-	lw	v52, %lo(p)(v53)
-	lui	v55, %hi(k)
-	lw	v54, %lo(k)(v55)
-	add	v56, v52, v54
-	lui	v58, %hi(n)
-	lw	v57, %lo(n)(v58)
-	blt	v56, v57, if.true.3
-	j	if.false.3
-if.true.1:
-	lui	v60, %hi(i)
-	lw	v59, %lo(i)(v60)
-	lui	v62, %hi(p)
-	lw	v61, %lo(p)(v62)
-	beq	v59, v61, if.true.2
-	j	if.false.2
-if.exit.1:
-	j	for.incr
-if.false.1:
-	j	if.exit.1
-logic_and_continue:
-	lui	v64, %hi(i)
-	lw	v63, %lo(i)(v64)
-	lui	v66, %hi(n)
-	lw	v65, %lo(n)(v66)
-	slt	v67, v65, v63
-	xori	v67, v67, 1
-	mv	v51, v67
-	j	logic_and_exit
-logic_and_exit:
-	bne	v51, zero, if.true.1
-	j	if.false.1
-if.true.2:
-	la	v69,.strconst.2
-	mv	v68, v69
-	mv	a0, v68
-	call	print
-	mv	v70, a0
-	lui	v72, %hi(i)
-	lw	v71, %lo(i)(v72)
-	mv	a0, v71
+	mv	a0, a0
+	li	s1, 1
+	li	s0, 4
+	mul	t0, s1, s0
+	add	a0, t0, s0
+	mv	a0, a0
+	call	_bottom_malloc
+	mv	a0, a0
+	mv	a0, a0
+	sw	s1, 0(a0)
+	add	t0, a0, s0
+	mv	t0, t0
+	mv	t0, t0
+	lui	t1, %hi(count)
+	sw	t0, %lo(count)(t1)
+	lui	t0, %hi(count)
+	lw	t1, %lo(count)(t0)
+	lw	t0, 0(t1)
+	sw	zero, 0(t1)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	mv	s11, a0
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 52(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 56(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 60(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 64(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 68(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 72(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 76(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 80(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 84(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 88(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 92(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 96(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 100(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 104(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 108(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 112(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 116(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 120(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 124(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 128(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 132(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 136(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 140(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 144(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 152(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 156(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 160(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 164(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 168(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 172(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 176(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 180(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 184(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 188(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 192(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 196(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 200(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 204(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 208(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 212(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 216(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 220(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 224(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 228(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 232(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 236(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 240(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 244(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 248(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 252(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 256(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 260(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 264(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 268(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 272(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 276(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 280(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 284(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 288(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 292(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 296(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 300(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 304(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 308(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 312(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 316(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 320(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 324(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 328(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 332(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 336(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 340(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 344(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 348(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 352(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 356(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 360(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 364(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 368(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 372(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 376(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 380(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 384(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 388(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 392(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 396(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 400(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 404(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 408(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 412(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 416(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 420(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 424(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 428(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 432(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 436(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 440(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 444(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 448(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 452(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 456(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 460(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 464(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 468(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 472(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 476(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 480(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 484(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 488(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 492(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 496(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 500(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 504(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 508(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 512(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 516(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 520(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 524(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 528(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 532(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 536(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 540(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 544(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 548(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 552(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 556(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 560(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 564(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 568(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 572(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 576(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 580(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 584(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 588(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 592(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 596(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 600(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 604(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 608(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 612(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 616(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 620(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 624(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 628(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 632(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 636(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 640(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 644(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 648(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 652(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 656(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 660(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 664(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 668(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 672(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 676(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 680(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 684(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 688(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 692(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 696(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 700(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 704(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 708(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 712(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 716(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 720(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 724(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 728(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 732(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 736(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 740(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 744(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 748(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 752(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 756(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 760(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 764(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 768(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 772(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 776(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 780(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 784(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 788(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 792(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 796(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 800(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 804(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 808(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 812(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 816(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 820(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 824(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 828(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 832(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 836(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 840(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 844(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 848(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 852(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 856(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 860(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 864(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 868(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 872(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 876(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 880(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 884(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 888(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 892(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 896(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 900(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 904(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 908(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 912(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 916(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 920(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 924(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 928(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 932(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 936(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 940(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 944(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 948(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 952(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 956(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 960(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 964(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 968(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 972(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 148(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	mv	s10, a0
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	mv	s0, a0
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	mv	s1, a0
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	mv	s2, a0
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	mv	s3, a0
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	mv	s4, a0
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	mv	s5, a0
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	mv	s6, a0
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 4(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 20(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 28(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 44(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 40(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 48(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 36(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 32(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 24(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 16(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 12(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 8(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	sw	a0, 0(sp)
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	mv	s7, a0
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	mv	s8, a0
+	lui	t0, %hi(count)
+	lw	a0, %lo(count)(t0)
+	mv	a0, a0
+	call	getcount
+	mv	s9, a0
+	mv	a0, s11
 	call	toString
-	mv	v73, a0
-	mv	a0, v73
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
 	call	print
-	mv	v74, a0
-	la	v76,.strconst.3
-	mv	v75, v76
-	mv	a0, v75
+	mv	a0, a0
+	lw	a0, 52(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
 	call	print
-	mv	v77, a0
-	j	if.exit.2
-if.exit.2:
-	j	if.exit.1
-if.false.2:
-	lui	v79, %hi(i)
-	lw	v78, %lo(i)(v79)
-	mv	a0, v78
-	call	printInt
-	mv	v80, a0
-	la	v82,.strconst.1
-	mv	v81, v82
-	mv	a0, v81
+	mv	a0, a0
+	lw	a0, 56(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
 	call	print
-	mv	v83, a0
-	j	if.exit.2
-if.true.3:
-	la	v85,.strconst.4
-	mv	v84, v85
-	mv	a0, v84
+	mv	a0, a0
+	lw	a0, 60(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
 	call	print
-	mv	v86, a0
-	j	if.exit.3
-if.exit.3:
-	j	exit.12
-if.false.3:
-	j	if.exit.3
-mid:
-	j	logic_and_exit
-	.size	main, .-main
-                                        # -- End function
-	.type	n,@object
-	.section	.bss
-	.globl	n
-n:
-	.word	0
-	.size	n, 4
-
-	.type	p,@object
-	.section	.bss
-	.globl	p
-p:
-	.word	0
-	.size	p, 4
-
-	.type	k,@object
-	.section	.bss
-	.globl	k
-k:
-	.word	0
-	.size	k, 4
-
-	.type	i,@object
-	.section	.bss
-	.globl	i
-i:
-	.word	0
-	.size	i, 4
-
-	.type	.strconst,@object
-	.section	.rodata
-.strconst:
-	.asciz	"<< "
-	.size	.strconst, 3
-
-	.type	.strconst.1,@object
-	.section	.rodata
-.strconst.1:
-	.asciz	" "
-	.size	.strconst.1, 1
-
-	.type	.strconst.2,@object
-	.section	.rodata
-.strconst.2:
-	.asciz	"("
-	.size	.strconst.2, 1
-
-	.type	.strconst.3,@object
-	.section	.rodata
-.strconst.3:
-	.asciz	") "
-	.size	.strconst.3, 2
-
-	.type	.strconst.4,@object
-	.section	.rodata
-.strconst.4:
-	.asciz	">> "
-	.size	.strconst.4, 3
-
+	mv	a0, a0
+	lw	a0, 64(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 68(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 72(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 76(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 80(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 84(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 88(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 92(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 96(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 100(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 104(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 108(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 112(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 116(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 120(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 124(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 128(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 132(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 136(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 140(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 144(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 152(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 156(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 160(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 164(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 168(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 172(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 176(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 180(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 184(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 188(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 192(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 196(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 200(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 204(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 208(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 212(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 216(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 220(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 224(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 228(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 232(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 236(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 240(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 244(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 248(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 252(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 256(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 260(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 264(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 268(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 272(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 276(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 280(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 284(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 288(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 292(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 296(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 300(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 304(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 308(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 312(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 316(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 320(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 324(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 328(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 332(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 336(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 340(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 344(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 348(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 352(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 356(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 360(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 364(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 368(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 372(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 376(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 380(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 384(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 388(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 392(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 396(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 400(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 404(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 408(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 412(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 416(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 420(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 424(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 428(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 432(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 436(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 440(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 444(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 448(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 452(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 456(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 460(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 464(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 468(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 472(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 476(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 480(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 484(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 488(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 492(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 496(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 500(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 504(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 508(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 512(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 516(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 520(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 524(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 528(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 532(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 536(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 540(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 544(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 548(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 552(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 556(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 560(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 564(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 568(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 572(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 576(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 580(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 584(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 588(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 592(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 596(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 600(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 604(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 608(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 612(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 616(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 620(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 624(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 628(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 632(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 636(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 640(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 644(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 648(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 652(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 656(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 660(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 664(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 668(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 672(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 676(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 680(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 684(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 688(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 692(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 696(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 700(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 704(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 708(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 712(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 716(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 720(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 724(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 728(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 732(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 736(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 740(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 744(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 748(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 752(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 756(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 760(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 764(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 768(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 772(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 776(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 780(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 784(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 788(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 792(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 796(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 800(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 804(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 808(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 812(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 816(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 820(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 824(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 828(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 832(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 836(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 840(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 844(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 848(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 852(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 856(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 860(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 864(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 868(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 872(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 876(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 880(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 884(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 888(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 892(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 896(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 900(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 904(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 908(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 912(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 916(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 920(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 924(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 928(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 932(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 936(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 940(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 944(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 948(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 952(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 956(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 960(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 964(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 968(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 972(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 148(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	mv	a0, s10
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	mv	a0, s0
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	mv	a0, s1
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	mv	a0, s2
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	mv	a0, s3
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	mv	a0, s4
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	mv	a0, s5
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	mv	a0, s6
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 4(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 20(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 28(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 44(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 40(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 48(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 36(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 32(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 24(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 16(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 12(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 8(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 0(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	mv	a0, s7
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	mv	a0, s8
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	mv	a0, s9
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	la	a0,.strconst.1
+	mv	a0, a0
+	mv	a0, a0
+	call	println
+	mv	a0, a0
+	mv	a0, s11
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 52(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 56(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 60(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 64(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 68(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 72(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 76(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 80(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 84(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 88(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 92(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 96(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 100(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 104(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 108(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 112(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 116(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 120(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 124(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 128(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 132(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 136(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 140(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 144(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 152(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 156(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 160(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 164(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 168(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 172(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 176(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 180(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 184(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 188(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 192(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 196(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 200(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 204(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 208(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 212(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 216(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 220(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 224(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 228(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 232(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 236(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 240(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 244(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 248(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 252(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 256(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 260(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 264(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 268(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 272(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 276(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 280(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 284(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 288(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 292(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 296(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 300(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 304(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 308(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 312(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 316(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 320(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 324(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 328(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 332(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 336(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 340(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 344(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 348(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 352(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 356(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 360(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 364(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 368(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 372(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 376(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 380(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 384(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 388(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 392(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 396(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 400(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 404(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 408(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 412(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 416(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 420(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 424(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 428(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 432(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 436(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 440(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 444(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 448(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 452(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 456(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 460(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 464(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 468(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 472(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 476(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 480(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 484(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 488(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 492(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 496(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 500(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 504(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 508(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 512(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 516(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 520(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 524(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 528(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 532(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 536(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 540(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 544(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 548(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 552(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 556(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 560(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 564(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 568(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 572(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 576(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 580(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 584(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 588(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 592(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 596(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 600(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 604(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 608(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 612(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 616(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 620(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 624(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 628(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 632(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 636(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 640(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 644(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 648(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 652(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 656(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 660(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 664(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 668(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 672(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 676(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 680(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 684(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 688(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 692(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 696(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 700(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 704(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 708(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 712(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 716(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 720(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 724(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 728(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 732(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 736(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 740(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 744(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 748(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 752(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 756(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 760(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 764(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 768(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 772(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 776(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 780(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 784(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 788(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 792(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 796(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 800(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 804(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 808(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 812(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 816(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 820(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 824(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 828(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 832(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 836(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 840(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 844(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 848(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 852(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 856(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 860(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 864(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 868(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 872(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 876(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 880(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 884(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 888(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 892(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 896(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 900(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 904(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 908(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 912(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 916(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 920(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 924(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 928(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 932(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 936(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 940(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 944(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 948(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 952(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 956(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 960(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 964(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 968(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 972(sp)
+	call	toString
+	mv	a0, a0
+	la	a1,.strconst
+	mv	a1, a1
+	mv	a0, a0
+	mv	a1, a1
+	call	_bottom_str_cat
+	mv	a0, a0
+	mv	a0, a0
+	call	print
+	mv	a0, a0
+	lw	a0, 148(sp)
+	call	toString
+	mv	a0, a0

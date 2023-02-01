@@ -28,14 +28,8 @@ $_ZSt4swapIcENSt9enable_ifIXsr6__and_ISt6__not_ISt15__is_tuple_likeIT_EESt21is_m
 $_ZSt4moveIRcEONSt16remove_referenceIT_E4typeEOS2_ = comdat any
 
 @n = global i32 0, align 4
-@p = global i32 0, align 4
-@k = global i32 0, align 4
+@a = global i32* null, align 8
 @i = global i32 0, align 4
-@.strconst = private unnamed_addr constant [4 x i8] c"<< \00", align 1
-@.strconst.1 = private unnamed_addr constant [2 x i8] c" \00", align 1
-@.strconst.2 = private unnamed_addr constant [2 x i8] c"(\00", align 1
-@.strconst.3 = private unnamed_addr constant [3 x i8] c") \00", align 1
-@.strconst.4 = private unnamed_addr constant [4 x i8] c">> \00", align 1
 @llvm.global_ctors = appending global [1 x { i32, void ()*, i8* }] [{ i32, void ()*, i8* } { i32 65535, void ()* @_GLOBAL__sub_I_builtin.cpp, i8* null }]
 @_ZStL8__ioinit = internal global %"class.std::ios_base::Init" zeroinitializer, align 1
 @__dso_handle = external hidden global i8
@@ -45,130 +39,196 @@ $_ZSt4moveIRcEONSt16remove_referenceIT_E4typeEOS2_ = comdat any
 @.str.3 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
 @_ZSt3cin = external global %"class.std::basic_istream", align 8
 
-define i32 @main() {
-entry.12:
-  %func.ret.addr = alloca i32, align 4
-  call void @global_var_init()
-  store i32 0, i32* %func.ret.addr, align 4
-  %getInt.call = call i32 @getInt()
-  store i32 %getInt.call, i32* @n, align 4
-  %getInt.call.1 = call i32 @getInt()
-  store i32 %getInt.call.1, i32* @p, align 4
-  %getInt.call.2 = call i32 @getInt()
-  store i32 %getInt.call.2, i32* @k, align 4
-  %p.load = load i32, i32* @p, align 4
-  %k.load = load i32, i32* @k, align 4
-  %sub = sub i32 %p.load, %k.load
-  %icmp = icmp sgt i32 %sub, 1
-  br i1 %icmp, label %if.true, label %if.false
-
-exit.12:                                          ; preds = %if.exit.3
-  %func.ret.load = load i32, i32* %func.ret.addr, align 4
-  ret i32 %func.ret.load
-
-if.true:                                          ; preds = %entry.12
-  %getelementptr = getelementptr inbounds [4 x i8], [4 x i8]* @.strconst, i32 0, i32 0
-  call void @print(i8* %getelementptr)
-  br label %if.exit
-
-if.exit:                                          ; preds = %if.false, %if.true
-  %p.load.1 = load i32, i32* @p, align 4
-  %k.load.1 = load i32, i32* @k, align 4
-  %sub.1 = sub i32 %p.load.1, %k.load.1
-  store i32 %sub.1, i32* @i, align 4
-  br label %for.cond
-
-if.false:                                         ; preds = %entry.12
-  br label %if.exit
-
-for.cond:                                         ; preds = %for.incr, %if.exit
-  %i.load = load i32, i32* @i, align 4
-  %p.load.2 = load i32, i32* @p, align 4
-  %k.load.2 = load i32, i32* @k, align 4
-  %add = add i32 %p.load.2, %k.load.2
-  %icmp.1 = icmp sle i32 %i.load, %add
-  br i1 %icmp.1, label %for.body, label %for.exit
-
-for.incr:                                         ; preds = %if.exit.1
-  %i.load.1 = load i32, i32* @i, align 4
-  %add.1 = add i32 %i.load.1, 1
-  store i32 %add.1, i32* @i, align 4
-  br label %for.cond
-
-for.body:                                         ; preds = %for.cond
-  %i.load.2 = load i32, i32* @i, align 4
-  %icmp.2 = icmp sle i32 1, %i.load.2
-  br i1 %icmp.2, label %logic_and_continue, label %logic_and_exit
-
-for.exit:                                         ; preds = %for.cond
-  %p.load.4 = load i32, i32* @p, align 4
-  %k.load.3 = load i32, i32* @k, align 4
-  %add.2 = add i32 %p.load.4, %k.load.3
-  %n.load.1 = load i32, i32* @n, align 4
-  %icmp.5 = icmp slt i32 %add.2, %n.load.1
-  br i1 %icmp.5, label %if.true.3, label %if.false.3
-
-if.true.1:                                        ; preds = %logic_and_exit
-  %i.load.4 = load i32, i32* @i, align 4
-  %p.load.3 = load i32, i32* @p, align 4
-  %icmp.4 = icmp eq i32 %i.load.4, %p.load.3
-  br i1 %icmp.4, label %if.true.2, label %if.false.2
-
-if.exit.1:                                        ; preds = %if.exit.2, %if.false.1
-  br label %for.incr
-
-if.false.1:                                       ; preds = %logic_and_exit
-  br label %if.exit.1
-
-logic_and_continue:                               ; preds = %for.body
-  %i.load.3 = load i32, i32* @i, align 4
-  %n.load = load i32, i32* @n, align 4
-  %icmp.3 = icmp sle i32 %i.load.3, %n.load
-  br label %logic_and_exit
-
-logic_and_exit:                                   ; preds = %logic_and_continue, %for.body
-  %phi = phi i1 [ %icmp.2, %for.body ], [ %icmp.3, %logic_and_continue ]
-  br i1 %phi, label %if.true.1, label %if.false.1
-
-if.true.2:                                        ; preds = %if.true.1
-  %getelementptr.2 = getelementptr inbounds [2 x i8], [2 x i8]* @.strconst.2, i32 0, i32 0
-  call void @print(i8* %getelementptr.2)
-  %i.load.6 = load i32, i32* @i, align 4
-  %toString.call = call i8* @toString(i32 %i.load.6)
-  call void @print(i8* %toString.call)
-  %getelementptr.3 = getelementptr inbounds [3 x i8], [3 x i8]* @.strconst.3, i32 0, i32 0
-  call void @print(i8* %getelementptr.3)
-  br label %if.exit.2
-
-if.exit.2:                                        ; preds = %if.false.2, %if.true.2
-  br label %if.exit.1
-
-if.false.2:                                       ; preds = %if.true.1
-  %i.load.5 = load i32, i32* @i, align 4
-  call void @printInt(i32 %i.load.5)
-  %getelementptr.1 = getelementptr inbounds [2 x i8], [2 x i8]* @.strconst.1, i32 0, i32 0
-  call void @print(i8* %getelementptr.1)
-  br label %if.exit.2
-
-if.true.3:                                        ; preds = %for.exit
-  %getelementptr.4 = getelementptr inbounds [4 x i8], [4 x i8]* @.strconst.4, i32 0, i32 0
-  call void @print(i8* %getelementptr.4)
-  br label %if.exit.3
-
-if.exit.3:                                        ; preds = %if.false.3, %if.true.3
-  store i32 0, i32* %func.ret.addr, align 4
-  br label %exit.12
-
-if.false.3:                                       ; preds = %for.exit
-  br label %if.exit.3
-}
-
 define void @global_var_init() {
 entry:
+  %mul = mul i32 20, 4
+  %add = add i32 %mul, 4
+  %_bottom_malloc.call = call noalias i8* @_bottom_malloc(i32 %add)
+  %bitcast = bitcast i8* %_bottom_malloc.call to i32*
+  store i32 20, i32* %bitcast, align 4
+  %getelementptr = getelementptr inbounds i32, i32* %bitcast, i32 1
+  %bitcast.1 = bitcast i32* %getelementptr to i32*
+  store i32* %bitcast.1, i32** @a, align 8
   br label %exit
 
 exit:                                             ; preds = %entry
   ret void
+}
+
+define i32 @jud(i32 %x) {
+entry.12:
+  %flag.addr = alloca i8, align 1
+  %j.addr = alloca i32, align 4
+  %i.addr = alloca i32, align 4
+  %x.addr = alloca i32, align 4
+  %func.ret.addr = alloca i32, align 4
+  store i32 %x, i32* %x.addr, align 4
+  store i32 0, i32* %i.addr, align 4
+  br label %for.cond
+
+exit.12:                                          ; preds = %if.true.1, %for.exit
+  %func.ret.load = load i32, i32* %func.ret.addr, align 4
+  ret i32 %func.ret.load
+
+for.cond:                                         ; preds = %for.incr, %entry.12
+  %i.load = load i32, i32* %i.addr, align 4
+  %n.load = load i32, i32* @n, align 4
+  %x.load = load i32, i32* %x.addr, align 4
+  %sdiv = sdiv i32 %n.load, %x.load
+  %icmp = icmp slt i32 %i.load, %sdiv
+  br i1 %icmp, label %for.body, label %for.exit
+
+for.incr:                                         ; preds = %if.exit.1
+  %i.load.1 = load i32, i32* %i.addr, align 4
+  %add.1 = add i32 %i.load.1, 1
+  store i32 %add.1, i32* %i.addr, align 4
+  br label %for.cond
+
+for.body:                                         ; preds = %for.cond
+  %zext = zext i1 false to i8
+  store i8 %zext, i8* %flag.addr, align 1
+  store i32 0, i32* %j.addr, align 4
+  br label %for.cond.1
+
+for.exit:                                         ; preds = %for.cond
+  store i32 0, i32* %func.ret.addr, align 4
+  br label %exit.12
+
+for.cond.1:                                       ; preds = %for.incr.1, %for.body
+  %j.load = load i32, i32* %j.addr, align 4
+  %x.load.1 = load i32, i32* %x.addr, align 4
+  %sub = sub i32 %x.load.1, 1
+  %icmp.1 = icmp slt i32 %j.load, %sub
+  br i1 %icmp.1, label %for.body.1, label %for.exit.1
+
+for.incr.1:                                       ; preds = %if.exit
+  %j.load.1 = load i32, i32* %j.addr, align 4
+  %add.2 = add i32 %j.load.1, 1
+  store i32 %add.2, i32* %j.addr, align 4
+  br label %for.cond.1
+
+for.body.1:                                       ; preds = %for.cond.1
+  %a.load = load i32*, i32** @a, align 8
+  %i.load.2 = load i32, i32* %i.addr, align 4
+  %x.load.2 = load i32, i32* %x.addr, align 4
+  %mul.1 = mul i32 %i.load.2, %x.load.2
+  %j.load.2 = load i32, i32* %j.addr, align 4
+  %add.3 = add i32 %mul.1, %j.load.2
+  %a.load.element.addr = getelementptr inbounds i32, i32* %a.load, i32 %add.3
+  %a.load.element.load = load i32, i32* %a.load.element.addr, align 4
+  %a.load.1 = load i32*, i32** @a, align 8
+  %i.load.3 = load i32, i32* %i.addr, align 4
+  %x.load.3 = load i32, i32* %x.addr, align 4
+  %mul.2 = mul i32 %i.load.3, %x.load.3
+  %j.load.3 = load i32, i32* %j.addr, align 4
+  %add.4 = add i32 %mul.2, %j.load.3
+  %add.5 = add i32 %add.4, 1
+  %a.load.1.element.addr = getelementptr inbounds i32, i32* %a.load.1, i32 %add.5
+  %a.load.1.element.load = load i32, i32* %a.load.1.element.addr, align 4
+  %icmp.2 = icmp sgt i32 %a.load.element.load, %a.load.1.element.load
+  br i1 %icmp.2, label %if.true, label %if.false
+
+for.exit.1:                                       ; preds = %for.cond.1
+  %flag.load = load i8, i8* %flag.addr, align 1
+  %trunc = trunc i8 %flag.load to i1
+  %xor = xor i1 %trunc, true
+  br i1 %xor, label %if.true.1, label %if.false.1
+
+if.true:                                          ; preds = %for.body.1
+  %zext.1 = zext i1 true to i8
+  store i8 %zext.1, i8* %flag.addr, align 1
+  br label %if.exit
+
+if.exit:                                          ; preds = %if.false, %if.true
+  br label %for.incr.1
+
+if.false:                                         ; preds = %for.body.1
+  br label %if.exit
+
+if.true.1:                                        ; preds = %for.exit.1
+  store i32 1, i32* %func.ret.addr, align 4
+  br label %exit.12
+
+if.exit.1:                                        ; preds = %if.false.1
+  br label %for.incr
+
+if.false.1:                                       ; preds = %for.exit.1
+  br label %if.exit.1
+}
+
+define i32 @main() {
+entry.13:
+  %func.ret.addr.1 = alloca i32, align 4
+  call void @global_var_init()
+  store i32 0, i32* %func.ret.addr.1, align 4
+  %getInt.call = call i32 @getInt()
+  store i32 %getInt.call, i32* @n, align 4
+  store i32 0, i32* @i, align 4
+  br label %for.cond.2
+
+exit.13:                                          ; preds = %if.true.2, %for.exit.3
+  %func.ret.load.1 = load i32, i32* %func.ret.addr.1, align 4
+  ret i32 %func.ret.load.1
+
+for.cond.2:                                       ; preds = %for.incr.2, %entry.13
+  %i.load.4 = load i32, i32* @i, align 4
+  %n.load.1 = load i32, i32* @n, align 4
+  %icmp.3 = icmp slt i32 %i.load.4, %n.load.1
+  br i1 %icmp.3, label %for.body.2, label %for.exit.2
+
+for.incr.2:                                       ; preds = %for.body.2
+  %i.load.5 = load i32, i32* @i, align 4
+  %add.6 = add i32 %i.load.5, 1
+  store i32 %add.6, i32* @i, align 4
+  br label %for.cond.2
+
+for.body.2:                                       ; preds = %for.cond.2
+  %a.load.2 = load i32*, i32** @a, align 8
+  %i.load.6 = load i32, i32* @i, align 4
+  %a.load.2.element.addr = getelementptr inbounds i32, i32* %a.load.2, i32 %i.load.6
+  %a.load.2.element.load = load i32, i32* %a.load.2.element.addr, align 4
+  %getInt.call.1 = call i32 @getInt()
+  store i32 %getInt.call.1, i32* %a.load.2.element.addr, align 4
+  br label %for.incr.2
+
+for.exit.2:                                       ; preds = %for.cond.2
+  %n.load.2 = load i32, i32* @n, align 4
+  store i32 %n.load.2, i32* @i, align 4
+  br label %for.cond.3
+
+for.cond.3:                                       ; preds = %for.incr.3, %for.exit.2
+  %i.load.7 = load i32, i32* @i, align 4
+  %icmp.4 = icmp sgt i32 %i.load.7, 0
+  br i1 %icmp.4, label %for.body.3, label %for.exit.3
+
+for.incr.3:                                       ; preds = %if.exit.2
+  %i.load.8 = load i32, i32* @i, align 4
+  %sdiv.1 = sdiv i32 %i.load.8, 2
+  store i32 %sdiv.1, i32* @i, align 4
+  br label %for.cond.3
+
+for.body.3:                                       ; preds = %for.cond.3
+  %i.load.9 = load i32, i32* @i, align 4
+  %jud.call = call i32 @jud(i32 %i.load.9)
+  %icmp.5 = icmp sgt i32 %jud.call, 0
+  br i1 %icmp.5, label %if.true.2, label %if.false.2
+
+for.exit.3:                                       ; preds = %for.cond.3
+  store i32 0, i32* %func.ret.addr.1, align 4
+  br label %exit.13
+
+if.true.2:                                        ; preds = %for.body.3
+  %i.load.10 = load i32, i32* @i, align 4
+  %toString.call = call i8* @toString(i32 %i.load.10)
+  call void @print(i8* %toString.call)
+  store i32 0, i32* %func.ret.addr.1, align 4
+  br label %exit.13
+
+if.exit.2:                                        ; preds = %if.false.2
+  br label %for.incr.3
+
+if.false.2:                                       ; preds = %for.body.3
+  br label %if.exit.2
 }
 
 ; Function Attrs: noinline uwtable

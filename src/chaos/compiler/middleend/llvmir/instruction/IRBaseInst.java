@@ -12,9 +12,9 @@ public abstract class IRBaseInst extends IRUser {
         setParentBlock(parentBlock);
     }
 
-    public IRBaseInst(String name, IRBaseType type, IRBlock parentBlock, boolean insertAtLast) {
+    public IRBaseInst(String name, IRBaseType type, IRBlock parentBlock, boolean insertAtFirst) {
         super(name,type);
-        setParentBlockAtLast(parentBlock);
+        setParentBlockAtFirst(parentBlock);
     }
 
     public void setParentBlock(IRBlock parentBlock) {
@@ -22,8 +22,8 @@ public abstract class IRBaseInst extends IRUser {
         if (parentBlock != null) parentBlock.addInst(this);
     }
 
-    public void setParentBlockAtLast(IRBlock parentBlock) {
-        if (parentBlock != null) parentBlock.addInstAtLast(this);
+    public void setParentBlockAtFirst(IRBlock parentBlock) {
+        if (parentBlock != null) parentBlock.addInstAtFirst(this);
     }
 
     public boolean mayHaveSideEffects() {return false;}

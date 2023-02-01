@@ -27,8 +27,8 @@ import java.io.PrintStream;
 public class Compiler {
     public static void main(String[] args) throws Exception {
         try {
-//            FileInputStream input = new FileInputStream("D:\\Sam\\program\\Mx-Compiler\\testcases\\codegen\\t70.mx");
-//            PrintStream output = new PrintStream("D:\\Sam\\program\\Masterball\\judge\\testcases\\codegen\\my_llvm_out.ll");
+//            FileInputStream input = new FileInputStream("D:\\Sam\\program\\Mx-Compiler\\testcases\\codegen\\e1.mx");
+//            PrintStream output = new PrintStream("D:\\Sam\\program\\Mx-Compiler\\debug\\test.s");
             InputStream input = System.in;
             PrintStream output  = System.out;
 
@@ -58,8 +58,8 @@ public class Compiler {
             new MiddleEndOptimizer().runOnModule(irModule);
 
             //  IR Print
-            IRPrinter irPrinter = new IRPrinter("test", output);
-            irPrinter.printModule(irModule);
+//            IRPrinter irPrinter = new IRPrinter("test", output);
+//            irPrinter.printModule(irModule);
 
             // BackEnd
             AsmBuilder asmBuilder = new AsmBuilder(irModule);

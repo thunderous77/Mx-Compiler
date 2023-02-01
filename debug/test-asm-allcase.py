@@ -3,6 +3,10 @@ import time
 
 # export CLASSPATH="/mnt/e/Compiler-Design/antlr-4.10.1-complete.jar:$CLASSPATH"
 
+def cleanup ():    
+    os.system("cd ../src && (find -name '*.class' | xargs rm) && cd ../debug")
+
+cleanup()
 
 judge_list = open("../testcases/codegen/judgelist.txt").readlines()
 
@@ -74,4 +78,5 @@ for judge in judge_list:
 
 print(fail_collect)
 
-os.system("cd ../src && rm ./*.class && rm ./*/*.class && rm ./*/*/*.class && rm ./*/*/*/*.class && rm ./*/*/*/*/*.class && cd ../debug")
+cleanup()
+

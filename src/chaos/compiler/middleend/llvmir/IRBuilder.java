@@ -62,7 +62,6 @@ public class IRBuilder implements ASTVisitor {
         current.block = globalVarInitFunc.exitBlock;
         new IRRetInst(globalVarInitFunc.exitBlock);
 
-
         // common nodes
         for (BaseNode sonNode : node.sonNodes)
             if (!(sonNode instanceof VarDefStmtNode)) sonNode.accept(this);

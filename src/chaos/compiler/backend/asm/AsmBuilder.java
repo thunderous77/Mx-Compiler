@@ -69,7 +69,9 @@ public class AsmBuilder implements IRInstVisitor {
             irFunction.asmOperand = function;
 
             for (int i = 0; i < ((IRFunctionType) irFunction.type).argTypes.size(); i++) {
-                AsmVirtualReg reg = new AsmVirtualReg(irFunction.getArgType(i).size());
+                IRValue arg = irFunction.operandList.get(i).value;
+                AsmVirtualReg reg = new AsmVirtualReg(arg.type.size());
+                arg.asmOperand = reg;
                 function.argsList.add(reg);
 
                 // spill
@@ -139,7 +141,7 @@ public class AsmBuilder implements IRInstVisitor {
 
         // sp back
         new AsmALUInst("add", AsmPhysicalReg.reg("sp"), AsmPhysicalReg.reg("sp"),
-                new AsmOffsetStack(0, AsmOffsetStack.StackType.raiseSp), curFunction.entryBlock);
+                new AsmOffsetStack(0, AsmOffsetStack.StackType.raiseSp), curFunction.exitBlock);
 
         // return
         new AsmRetInst(curFunction.exitBlock);

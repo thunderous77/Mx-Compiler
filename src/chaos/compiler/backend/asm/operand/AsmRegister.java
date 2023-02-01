@@ -12,4 +12,12 @@ public class AsmRegister extends AsmBaseOperand {
         super(identifier);
     }
 
+    @Override
+    public String toString() {
+        if (color == null) {
+            return identifier;
+        }
+        return color.identifier;
+    }
+
 }
