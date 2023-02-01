@@ -31,7 +31,7 @@ public class Compiler {
 //            FileInputStream input = new FileInputStream("D:\\Sam\\program\\Mx-Compiler\\testcases\\codegen\\e1.mx");
 //            PrintStream output = new PrintStream("D:\\Sam\\program\\Mx-Compiler\\debug\\test.s");
             InputStream input = System.in;
-            PrintStream output  = System.out;
+            PrintStream output = new PrintStream("output.s");;
 
             // FrontEnd
             // get lexer
