@@ -11,6 +11,7 @@ public class BackEndOptimizer {
             new RemoveLoadStoreInst().runOnFunc(function);
             new MergeBlock().runOnFunc(function);
             new CoalesceMoveInst().runOnFunc(function);
+            new RemoveDefInst().runOnFunc(function);
         }
     }
 
