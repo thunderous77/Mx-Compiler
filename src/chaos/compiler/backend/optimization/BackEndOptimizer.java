@@ -10,7 +10,7 @@ public class BackEndOptimizer {
             new CoalesceAddInst().runOnFunc(function);
             new CoalesceMoveInst().runOnFunc(function);
             new MergeBlock().runOnFunc(function);
-//            new RemoveAddZeroInst().runOnFunc(function);
+            new RemoveAddZeroInst().runOnFunc(function);
             new RemoveDefInst().runOnFunc(function);
             new RemoveLoadStoreInst().runOnFunc(function);
             new TailCall().runOnFunc(function);
