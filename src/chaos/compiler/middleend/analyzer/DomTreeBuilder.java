@@ -72,9 +72,6 @@ public class DomTreeBuilder {
     }
 
     private Node intersect(Node u, Node v) {
-        /*
-         * LCA in DomTree
-         */
         while (u != v) {
             while (u.order > v.order) u = u.idom;
             while (u.order < v.order) v = v.idom;

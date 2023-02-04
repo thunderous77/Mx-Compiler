@@ -1,6 +1,6 @@
 lexer grammar MxLexer;
 
-@header {
+@headerBlock {
 package chaos.compiler.frontend.parser;
 }
 

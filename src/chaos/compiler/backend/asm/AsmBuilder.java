@@ -116,7 +116,7 @@ public class AsmBuilder implements IRInstVisitor {
             new AsmMvInst(rd, phyReg, curFunction.entryBlock);
         }
 
-        // ra
+        // new ra
         AsmVirtualReg raTemp = new AsmVirtualReg();
         new AsmMvInst(raTemp, AsmPhysicalReg.reg("ra"), curFunction.entryBlock);
 

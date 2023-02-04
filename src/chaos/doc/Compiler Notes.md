@@ -195,7 +195,7 @@
   
     [这里](https://blog.csdn.net/qq_42570601/article/details/107581608)对于第一个和第二个参数解释很清楚
     
-    `getelementptr %A, ptr %B, i32 a(,i32 b)` 代表先移动a*A，再移动b位（struct里，一个变量算一位）
+    `getelementptr %A, ptr %B, i32 a(,i32 b)` 代表先移动 a 位 *A，再移动 b 位（struct里，一个变量算一位）
   
 * IRBlock
 
@@ -295,6 +295,20 @@
     %a = MOVE %b
     %a = ADD %a %c
   ```
+
+### AsmBuilder
+
+* **AsmFunction**
+
+  每个函数会在栈空间（内存）开一块区域，用来存放参数，返回值等
+
+  最多分配 8 个物理寄存器给函数调用的参数（callee），即 a0 - a7 用于传递参数，如果参数过多，其他的存到栈空间，之后再 load
+
+  `AsmPhysicalReg.calleeSavedList` 中存有当前函数调用的参数，当进入一个新的函数时，要先将其备份至其他寄存器，因为这里要存新函数调用的参数，新的函数执行完之后，再把备份存回去
+
+  `callerSavedList` 中存当前函数调用其他函数时传递的参数，最后开栈空间的时候取 caller 和 callee 两者较大者
+
+* 
 
 
 

@@ -1,6 +1,6 @@
 parser grammar MxParser;
 
-@header {
+@headerBlock {
 package chaos.compiler.frontend.parser;
 }
 options {

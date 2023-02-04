@@ -1,6 +1,7 @@
 import chaos.compiler.backend.asm.AsmBuilder;
 import chaos.compiler.backend.asm.AsmPrinter;
 import chaos.compiler.backend.asm.hierarchy.AsmModule;
+import chaos.compiler.backend.optimization.BackEndOptimizer;
 import chaos.compiler.backend.regalloca.RegAllocator;
 import chaos.compiler.backend.regalloca.StackAllocator;
 import chaos.compiler.frontend.ast.ASTBuilder;
@@ -71,6 +72,9 @@ public class Compiler {
 
             // Stack Allocate
             new StackAllocator().runOnModule(asmModule);
+
+            // BackEnd Optimization
+            new BackEndOptimizer().runOnModule(asmModule);
 
             // builtin function ASM Print
             new BuiltinFunctionASMPrinter("builtin.s");

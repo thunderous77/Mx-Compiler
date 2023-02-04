@@ -10,7 +10,7 @@ public class IRMoveInst extends IRBaseInst {
         super("move",new IRVoidType(),parentBlock);
         this.addOperand(dest);
         this.addOperand(source);
-        dest.moveDefs.add(this);
+        dest.moveInstSet.add(this);
     }
 
     public IRValue dest() {

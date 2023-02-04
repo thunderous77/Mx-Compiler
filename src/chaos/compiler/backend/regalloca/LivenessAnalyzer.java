@@ -16,8 +16,9 @@ public class LivenessAnalyzer {
         init(function);
         function.blockList.forEach(this::collectUsesAndDefs);
 
-        // Log.report(function.identifier);
-        // Log.report(function.exitBlock);
+
+
+
 
         workQueue.offer(function.exitBlock);
         while (!workQueue.isEmpty()) livenessAnalyze(workQueue.poll());

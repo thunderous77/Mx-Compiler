@@ -9,16 +9,15 @@ import chaos.compiler.middleend.llvmir.instruction.*;
 import java.util.HashSet;
 
 public class Loop {
-    public IRBlock preHeader;
-    public IRBlock header;
+    public IRBlock headerBlock;
     public HashSet<IRBlock> tailers = new HashSet<>();
     public HashSet<IRBlock> blocks = new HashSet<>();
 
     public Loop fatherLoop;
-    public HashSet<Loop> nestedLoops = new HashSet<>();
+    public HashSet<Loop> sonLoopSet = new HashSet<>();
 
-    public Loop(IRBlock header) {
-        this.header = header;
+    public Loop(IRBlock headerBlock) {
+        this.headerBlock = headerBlock;
     }
 
     public void addBlock(IRBlock block) {
@@ -26,11 +25,12 @@ public class Loop {
         this.blocks.add(block);
     }
 
-    public void addNestedLoop(Loop subLoop) {
-        this.nestedLoops.add(subLoop);
-        subLoop.fatherLoop = this;
+    public void addNestedLoop(Loop sonLoop) {
+        this.sonLoopSet.add(sonLoop);
+        sonLoop.fatherLoop = this;
     }
 
+    // check whether value is invariant in this loop
     public boolean isInvariant(IRValue value) {
         if (value instanceof IRBaseConstant) return true;
 
@@ -38,7 +38,7 @@ public class Loop {
             return !blocks.contains(((IRBaseInst) value).parentBlock);
         }
 
-        for (IRMoveInst move : value.moveDefs) {
+        for (IRMoveInst move : value.moveInstSet) {
             if (blocks.contains(move.parentBlock)) return false;
         }
 

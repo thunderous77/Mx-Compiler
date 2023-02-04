@@ -12,7 +12,7 @@ public class IRValue {
     // value rename
     public static Boolean rename = true;
     public static HashMap<String, Integer> renameMap = new HashMap<>();
-    public Set<IRMoveInst> moveDefs = new HashSet<>();
+    public Set<IRMoveInst> moveInstSet = new HashSet<>();
     public AsmBaseOperand asmOperand = null;
 
     public static String rename(String rawName) {
