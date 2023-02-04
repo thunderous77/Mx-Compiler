@@ -7,8 +7,8 @@ public class BackEndOptimizer {
 
     public void runOnModule(AsmModule module) {
         for (AsmFunction function : module.functionList) {
-            new RemoveAddZeroInst().runOnFunc(function);
-//            new RemoveLoadStoreInst().runOnFunc(function);
+//            new RemoveAddZeroInst().runOnFunc(function);
+            new RemoveLoadStoreInst().runOnFunc(function);
             new MergeBlock().runOnFunc(function);
             new CoalesceMoveInst().runOnFunc(function);
         }
