@@ -61,7 +61,7 @@ public class Compiler {
             new MiddleEndOptimizer().runOnModule(irModule);
 
             // MiddleEnd Analyzer
-//            new GPMarker().runOnModule(irModule);
+            new GPMarker().runOnModule(irModule);
 
             //  IR Print
 //            IRPrinter irPrinter = new IRPrinter("test", output);
