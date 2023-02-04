@@ -69,6 +69,12 @@ public class IRBlock extends IRValue {
         return instList.getLast();
     }
 
+    public void tReplaceTerminator(IRBaseInst newTerminator) {
+        newTerminator.parentBlock = this;
+        instList.removeLast();
+        instList.addLast(newTerminator);
+    }
+
     public void redirectPreBlock(IRBlock oldPre, IRBlock newPre) {
         this.preBlockList.remove(oldPre);
         this.preBlockList.add(newPre);

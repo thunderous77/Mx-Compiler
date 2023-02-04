@@ -35,6 +35,10 @@ public class IRCallInst extends IRBaseInst {
         return this.getOperand(index + 1);
     }
 
+    public boolean isTailRecursive() {
+        return isTailCall && callFunc() == this.parentBlock.parentFunction;
+    }
+
     @Override
     public boolean isValueSelf() {
         return !callFunc().isVoid();

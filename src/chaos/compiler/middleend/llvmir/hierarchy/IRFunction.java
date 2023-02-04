@@ -1,5 +1,6 @@
 package chaos.compiler.middleend.llvmir.hierarchy;
 
+import chaos.compiler.middleend.analyzer.CallGraphAnalyzer;
 import chaos.compiler.middleend.llvmir.IRValue;
 import chaos.compiler.middleend.llvmir.type.IRBaseType;
 import chaos.compiler.middleend.llvmir.type.IRFunctionType;
@@ -14,6 +15,9 @@ public class IRFunction extends IRGlobalValue {
     public IRBlock entryBlock, exitBlock;
     public IRValue retValuePtr;
     public LinkedList<IRBlock> blockList = new LinkedList<>();
+
+    public CallGraphAnalyzer.Node node = new CallGraphAnalyzer.Node(this);
+
 
     public HashSet<Loop> topLevelLoops = new HashSet<>();
 

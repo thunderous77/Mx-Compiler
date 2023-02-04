@@ -9,6 +9,7 @@ import chaos.compiler.frontend.ast.node.RootNode;
 import chaos.compiler.frontend.parser.MxLexer;
 import chaos.compiler.frontend.parser.MxParser;
 import chaos.compiler.frontend.semantic.SemanticChecker;
+import chaos.compiler.middleend.analyzer.GPMarker;
 import chaos.compiler.middleend.llvmir.IRBuilder;
 import chaos.compiler.middleend.llvmir.IRPrinter;
 import chaos.compiler.middleend.llvmir.hierarchy.IRModule;
@@ -58,6 +59,9 @@ public class Compiler {
 
             // MiddleEnd Optimizer
             new MiddleEndOptimizer().runOnModule(irModule);
+
+            // MiddleEnd Analyzer
+            new GPMarker().runOnModule(irModule);
 
             //  IR Print
 //            IRPrinter irPrinter = new IRPrinter("test", output);

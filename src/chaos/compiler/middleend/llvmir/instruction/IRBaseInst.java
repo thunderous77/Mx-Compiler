@@ -1,5 +1,6 @@
 package chaos.compiler.middleend.llvmir.instruction;
 
+import chaos.compiler.middleend.llvmir.IRUse;
 import chaos.compiler.middleend.llvmir.IRUser;
 import chaos.compiler.middleend.llvmir.hierarchy.IRBlock;
 
@@ -15,6 +16,13 @@ public abstract class IRBaseInst extends IRUser {
     public IRBaseInst(String name, IRBaseType type, IRBlock parentBlock, boolean insertAtFirst) {
         super(name,type);
         setParentBlockAtFirst(parentBlock);
+    }
+
+    public void removedFromAllUsers() {
+        for (IRUse use : operandList) {
+            if (use.value != null)
+                use.value.useList.remove(this);
+        }
     }
 
     public void setParentBlock(IRBlock parentBlock) {
