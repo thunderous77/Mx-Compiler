@@ -15,6 +15,11 @@ public class AsmStoreInst extends AsmBaseInst {
     }
 
     @Override
+    public AsmBaseInst copy() {
+        return new AsmStoreInst(width, rs1, rs2, imm, null);
+    }
+
+    @Override
     public String format() {
         return String.format("%s\t%s, %s(%s)", "s" + AsmTranslator.translateWidth(width), rs2, imm, rs1);
     }

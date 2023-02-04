@@ -20,6 +20,11 @@ public class AsmRetInst extends AsmBaseInst{
     }
 
     @Override
+    public AsmBaseInst copy() {
+        return new AsmRetInst(null);
+    }
+
+    @Override
     public String format() {
         return "ret";
     }

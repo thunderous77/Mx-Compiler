@@ -13,6 +13,7 @@ public class BackEndOptimizer {
 //            new RemoveAddZeroInst().runOnFunc(function);
             new RemoveDefInst().runOnFunc(function);
             new RemoveLoadStoreInst().runOnFunc(function);
+            new TailCall().runOnFunc(function);
         }
     }
 

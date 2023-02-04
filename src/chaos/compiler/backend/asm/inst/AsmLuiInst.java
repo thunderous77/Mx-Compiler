@@ -11,6 +11,11 @@ public class AsmLuiInst extends AsmBaseInst{
     }
 
     @Override
+    public AsmBaseInst copy() {
+        return new AsmLuiInst(rd, imm, null);
+    }
+
+    @Override
     public String format() {
         return String.format("%s\t%s, %s", "lui", rd, imm);
     }

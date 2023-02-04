@@ -12,6 +12,11 @@ public class AsmJmpInst extends AsmBaseInst{
     }
 
     @Override
+    public AsmBaseInst copy() {
+        return new AsmJmpInst(target, null);
+    }
+
+    @Override
     public String format() {
         return String.format("%s\t%s", "j", target);
     }

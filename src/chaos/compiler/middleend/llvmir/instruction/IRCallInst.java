@@ -10,7 +10,9 @@ import java.util.ArrayList;
 
 public class IRCallInst extends IRBaseInst {
 
-    boolean noaliasFlag = false;
+    public boolean noaliasFlag = false;
+
+    public boolean isTailCall = false;
 
     public IRCallInst(IRFunction callFunc, IRBlock parentBlock, ArrayList<IRValue> callArgs) {
         super(callFunc.name + ".call", ((IRFunctionType) callFunc.type).retType, parentBlock);

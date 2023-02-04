@@ -44,6 +44,8 @@ public abstract class AsmBaseInst {
         return ret;
     }
 
+    public abstract AsmBaseInst copy();
+
     public abstract String format();
 
 }

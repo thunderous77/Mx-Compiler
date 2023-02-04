@@ -13,6 +13,11 @@ public class AsmLaInst extends AsmBaseInst{
     }
 
     @Override
+    public AsmBaseInst copy() {
+        return new AsmLaInst(rd, symbol, null);
+    }
+
+    @Override
     public String format() {
         // la rd, symbol
         return String.format("%s\t%s,%s", "la", rd, symbol);

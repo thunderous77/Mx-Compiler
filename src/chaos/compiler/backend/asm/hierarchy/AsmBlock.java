@@ -11,7 +11,7 @@ import java.util.LinkedList;
 
 public class AsmBlock extends AsmBaseOperand{
 
-    public ArrayList<AsmBaseInst> instList = new ArrayList<>();
+    public LinkedList<AsmBaseInst> instList = new LinkedList<>();
     public ArrayList<AsmBlock> preBlockList = new ArrayList<>(), nextBlockList = new ArrayList<>();
     public HashSet<AsmRegister> in = new HashSet<>(), out = new HashSet<>();
     public int loopDepth = 0;

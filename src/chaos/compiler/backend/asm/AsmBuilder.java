@@ -224,7 +224,7 @@ public class AsmBuilder implements IRInstVisitor {
 
         curFunction.callerArgStackUse = max(curFunction.callerArgStackUse, callFunction.calleeArgStackUse);
 
-        new AsmCallInst(callFunction, curBlock);
+        new AsmCallInst(callFunction, curBlock, inst.isTailCall);
         if (!inst.callFunc().isVoid())
             new AsmMvInst(queryReg(inst), AsmPhysicalReg.reg("a0"), curBlock);
     }
