@@ -10,7 +10,6 @@ import chaos.compiler.middleend.llvmir.hierarchy.IRFunction;
 import chaos.compiler.middleend.llvmir.hierarchy.IRGlobalVariable;
 import chaos.compiler.middleend.llvmir.instruction.*;
 import chaos.compiler.middleend.llvmir.type.IRPointerType;
-import com.sun.jdi.Value;
 
 import java.util.*;
 
@@ -49,19 +48,6 @@ public class Mem2Reg {
     }
 
     private void phiInsertion(IRFunction function) {
-        /*
-         * b1: %i.addr = alloca i32, align 4
-         * b2: %store val, %i.addr
-         * -> b2: phi [b1, val]
-         */
-
-        // Log.mark("phi insertion: " + function.identifier());
-        /*
-        function.blocks.forEach(block -> Log.report("idom: ", block.identifier(), block.node.idom.fromBlock.identifier()));
-        function.blocks.forEach(block -> block.node.domFrontier.forEach(
-                df -> Log.report("df", block.identifier(), df.identifier())
-        ));
-        */
         collectAllocated(function);
 
         for (IRBaseInst allocaVar : allocated) {
@@ -79,7 +65,6 @@ public class Mem2Reg {
                     visited.add(frontier);
 
                     workQueue.offer(frontier);
-                    // Log.mark("new phi");
                     var phi = new IRPhiInst(((IRPointerType) allocaVar.type).pointedType, null);
                     frontier.addPhiInst(phi);
                     phiAllocaName.put(phi, allocaVar.name);
